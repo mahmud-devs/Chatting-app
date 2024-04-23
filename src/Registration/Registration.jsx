@@ -1,10 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
+import { FaEye } from "react-icons/fa6";
+import { FaEyeSlash } from "react-icons/fa";
+
 import registrationImg from "../../src/assets/registration.png";
 
 const Registration = () => {
-    const handleSubmit = (event)=>{
-        event.preventDefault()
-    }
+    const [Email, setEmail] = useState("");
+    const [FullName, setFullName] = useState("");
+    const [Password, setPassword] = useState("");
+    const [eye, seteye] = useState("false");
+
+    // =================handle eye functionlallity===========
+
+    const handleEye = () => {
+        seteye(!eye);
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+    };
     return (
         <>
             <div className="flex justify-center">
@@ -31,6 +45,9 @@ const Registration = () => {
                                     name="email"
                                     autoComplete="off"
                                     className=" border-2 border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
+                                    onChange={(event) =>
+                                        setEmail(event.target.value)
+                                    }
                                 />
                             </div>
 
@@ -48,6 +65,9 @@ const Registration = () => {
                                     name="fullName"
                                     autoComplete="off"
                                     className=" border-2 border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
+                                    onChange={(event) =>
+                                        setFullName(event.target.value)
+                                    }
                                 />
                             </div>
 
@@ -58,18 +78,42 @@ const Registration = () => {
                                 >
                                     Password
                                 </label>
-                                <input
-                                    type="password"
-                                    placeholder="000000000"
-                                    id="password"
-                                    name="password"
-                                    autoComplete="off"
-                                    className=" border-2 border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
-                                />
+                                <div className="relative">
+                                    <input
+                                        type={eye ? "password" : "text"}
+                                        placeholder="000000000"
+                                        id="password"
+                                        name="password"
+                                        autoComplete="off"
+                                        className=" border-2 border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
+                                        onChange={(event) =>
+                                            setPassword(event.target.value)
+                                        }
+                                    />
+                                    <div
+                                        className="absolute right-5 top-1/2 -translate-y-1/2 hover:cursor-pointer"
+                                        onClick={handleEye}
+                                    >
+                                        {eye ? <FaEyeSlash /> : <FaEye />}
+                                    </div>
+                                </div>
                             </div>
 
-                            <button type="submit" className="bg-btnColor text-base py-4 font-nunito rounded-full text-center w-full text-white">Sign up</button>
+                            <button
+                                type="submit"
+                                className="bg-btnColor text-base py-4 font-nunito rounded-full text-center w-full text-white"
+                            >
+                                Sign up
+                            </button>
                         </form>
+                        <div className="w-3/4 text-center">
+                            <p className="text-[13px] font-open mt-4 text-[#03014C]">
+                                Already have an account ?{" "}
+                                <span className="text-[#EA6C00] font-semibold underline decoration-solid hover:cursor-pointer">
+                                    Sign In
+                                </span>{" "}
+                            </p>
+                        </div>
                     </div>
                     <div className="w-1/3 h-full">
                         <img
