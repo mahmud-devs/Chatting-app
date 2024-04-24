@@ -10,10 +10,56 @@ const Registration = () => {
     const [Password, setPassword] = useState("");
     const [eye, seteye] = useState("false");
 
-    // =================handle eye functionlallity===========
+    // ============= all error hook state
+    const [EmailError, setEmailError] = useState("");
+    const [FullNameError, setFullNameError] = useState("");
+    const [PasswordError, setPasswordError] = useState("");
+
+    // ============ all regex ===========
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    // =================handle eye functionlallity ===========
 
     const handleEye = () => {
         seteye(!eye);
+    };
+
+    // =================handle signup functionality ===========
+
+    
+
+
+
+
+
+    const handleSignup = () => {
+        if (!Email) {
+            setEmailError("Email missing⚠️");
+        } else if (!emailRegex.test(Email)){
+            setEmailError("Email credential missing or invalid ⚠️");
+        }
+        else if (!FullName) {
+            setEmailError("");
+            setFullNameError("")
+            setPasswordError("");
+            setFullNameError("Full Name missing⚠️");
+        } else if (!Password) {
+            setEmailError("");
+            setFullNameError("")
+            setPasswordError("");
+            setPasswordError("Password missing⚠️");
+        } else if(!passwordRegex.test(Password)){
+            setPasswordError("Password credential missing or invalid ⚠️");
+            setFullNameError("")
+        } 
+        else {
+            setEmailError("");
+            setFullNameError("")
+            setPasswordError("");
+        }
     };
 
     const handleSubmit = (event) => {
@@ -31,6 +77,8 @@ const Registration = () => {
                             Free register and you can enjoy it
                         </p>
                         <form className="w-3/4" onSubmit={handleSubmit}>
+                            {/* ========== email ========== */}
+
                             <div className="mb-10 font-nunito">
                                 <label
                                     htmlFor="email"
@@ -49,7 +97,14 @@ const Registration = () => {
                                         setEmail(event.target.value)
                                     }
                                 />
+                                {EmailError && (
+                                    <span className="text-[red] inline-block mt-2 ms-2 font-normal ">
+                                        {EmailError}
+                                    </span>
+                                )}
                             </div>
+
+                            {/* ========= full name ============= */}
 
                             <div className="mb-10 ">
                                 <label
@@ -69,7 +124,14 @@ const Registration = () => {
                                         setFullName(event.target.value)
                                     }
                                 />
+                                {FullNameError && (
+                                    <span className="text-[red] inline-block mt-2 ms-2 font-normal ">
+                                        {FullNameError}
+                                    </span>
+                                )}
                             </div>
+
+                            {/* ========= password ============= */}
 
                             <div className="mb-10 ">
                                 <label
@@ -97,11 +159,17 @@ const Registration = () => {
                                         {eye ? <FaEyeSlash /> : <FaEye />}
                                     </div>
                                 </div>
+                                {PasswordError && (
+                                    <span className="text-[red] inline-block mt-2 ms-2 font-normal ">
+                                        {PasswordError}
+                                    </span>
+                                )}
                             </div>
 
                             <button
                                 type="submit"
                                 className="bg-btnColor text-base py-4 font-nunito rounded-full text-center w-full text-white"
+                                onClick={handleSignup}
                             >
                                 Sign up
                             </button>
@@ -109,7 +177,7 @@ const Registration = () => {
                         <div className="w-3/4 text-center">
                             <p className="text-[13px] font-open mt-4 text-[#03014C]">
                                 Already have an account ?{" "}
-                                <span className="text-[#EA6C00] font-semibold underline decoration-solid hover:cursor-pointer">
+                                <span className="text-[#EA6C00] font-semibold hover:underline decoration-solid hover:cursor-pointer">
                                     Sign In
                                 </span>{" "}
                             </p>
