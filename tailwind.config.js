@@ -10,9 +10,10 @@ export default {
         // -----------color-----------------
         colors: {
             darkBlue: "#11175D",
-            customBlack:"#000",
-            btnColor:"#5F35F5",
-            white:"#fff",
+            customBlack: "#000",
+            btnColor: "#5F35F5",
+            white: "#fff",
+            gray: "#ffffff99",
         },
         fontFamily: {
             open: ["Open Sans", "sans-serif"],

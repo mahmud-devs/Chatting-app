@@ -1,14 +1,23 @@
 import React, { useState } from "react";
 import { FaEye } from "react-icons/fa6";
 import { FaEyeSlash } from "react-icons/fa";
-
 import registrationImg from "../../src/assets/registration.png";
+import { ToastContainer, toast, Bounce } from "react-toastify";
+
+// ============== firebase ======================
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    sendEmailVerification,
+} from "firebase/auth";
 
 const Registration = () => {
+    const auth = getAuth();
     const [Email, setEmail] = useState("");
     const [FullName, setFullName] = useState("");
     const [Password, setPassword] = useState("");
-    const [eye, seteye] = useState("false");
+    const [eye, seteye] = useState(false);
+    const [loading, setloading] = useState(false);
 
     // ============= all error hook state
     const [EmailError, setEmailError] = useState("");
@@ -17,7 +26,8 @@ const Registration = () => {
 
     // ============ all regex ===========
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -29,36 +39,71 @@ const Registration = () => {
 
     // =================handle signup functionality ===========
 
-    
-
-
-
-
-
     const handleSignup = () => {
         if (!Email) {
             setEmailError("Email missing⚠️");
-        } else if (!emailRegex.test(Email)){
+        } else if (!emailRegex.test(Email)) {
             setEmailError("Email credential missing or invalid ⚠️");
-        }
-        else if (!FullName) {
+        } else if (!FullName) {
             setEmailError("");
-            setFullNameError("")
+            setFullNameError("");
             setPasswordError("");
             setFullNameError("Full Name missing⚠️");
         } else if (!Password) {
             setEmailError("");
-            setFullNameError("")
+            setFullNameError("");
             setPasswordError("");
             setPasswordError("Password missing⚠️");
-        } else if(!passwordRegex.test(Password)){
+        } else if (!passwordRegex.test(Password)) {
             setPasswordError("Password credential missing or invalid ⚠️");
-            setFullNameError("")
-        } 
-        else {
+            setFullNameError("");
+        } else {
+            setEmail("");
+            setFullName("");
+            setPassword("");
             setEmailError("");
-            setFullNameError("")
+            setFullNameError("");
             setPasswordError("");
+            setloading(true);
+            // ===== sign up a new user ===========
+            createUserWithEmailAndPassword(auth, Email, Password)
+                .then((userCredential) => {
+                    setloading(false);
+                    toast.success('✉️ Verificatin Email Sent!', {
+                        position: "top-left",
+                        autoClose: 6000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress:undefined ,
+                        theme: "light",
+                        transition: Bounce,
+                        });
+                    // ======= verification mail sent =======
+                    sendEmailVerification(auth.currentUser).then(() => {
+                        // Email verification sent!
+                        // ...
+                    });
+                })
+                .catch((error) => {
+                    setloading(false);
+                    
+                    if(error.message.includes("email")){
+                        toast.error('Email already exists', {
+                            position: "top-left",
+                            autoClose: 6000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                            transition: Bounce,
+                            });
+                    }
+                    
+                });
         }
     };
 
@@ -68,6 +113,19 @@ const Registration = () => {
     return (
         <>
             <div className="flex justify-center">
+                <ToastContainer
+                    position="top-left"
+                    autoClose={6000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                />
+
                 <div className=" w-[100%] bg-red-400 h-full flex justify-evenly items-center">
                     <div className="w-1/3">
                         <h1 className="text-darkBlue font-bold text-[34px] mb-[13px] font-nunito">
@@ -91,6 +149,7 @@ const Registration = () => {
                                     placeholder="Ladushing691@gmail.com"
                                     id="email"
                                     name="email"
+                                    value={Email}
                                     autoComplete="off"
                                     className=" border-2 border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
                                     onChange={(event) =>
@@ -118,6 +177,7 @@ const Registration = () => {
                                     placeholder="Ladushing GTG"
                                     id="fullName"
                                     name="fullName"
+                                    value={FullName}
                                     autoComplete="off"
                                     className=" border-2 border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
                                     onChange={(event) =>
@@ -142,10 +202,11 @@ const Registration = () => {
                                 </label>
                                 <div className="relative">
                                     <input
-                                        type={eye ? "password" : "text"}
+                                        type={eye ? "text" : "password"}
                                         placeholder="000000000"
                                         id="password"
                                         name="password"
+                                        value={Password}
                                         autoComplete="off"
                                         className=" border-2 border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
                                         onChange={(event) =>
@@ -168,10 +229,13 @@ const Registration = () => {
 
                             <button
                                 type="submit"
-                                className="bg-btnColor text-base py-4 font-nunito rounded-full text-center w-full text-white"
+                                className="bg-btnColor relative text-base py-4 font-nunito rounded-full text-center w-full text-white"
                                 onClick={handleSignup}
                             >
                                 Sign up
+                                {loading && (
+                                    <div className="absolute top-[33%]  left-[35%] h-5 w-5 rounded-full bg-transparent animate-spin border-t-white border-b-gray border-[3.5px] border-l-white border-r-gray"></div>
+                                )}
                             </button>
                         </form>
                         <div className="w-3/4 text-center">
