@@ -14,6 +14,7 @@ export default {
             btnColor: "#5F35F5",
             white: "#fff",
             gray: "#ffffff99",
+            textColor: "#03014C",
         },
         fontFamily: {
             open: ["Open Sans", "sans-serif"],

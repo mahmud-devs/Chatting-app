@@ -151,7 +151,7 @@ const Registration = () => {
                                     name="email"
                                     value={Email}
                                     autoComplete="off"
-                                    className=" border-2 border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
+                                    className=" border-2 focus:outline-none border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
                                     onChange={(event) =>
                                         setEmail(event.target.value)
                                     }
@@ -179,7 +179,7 @@ const Registration = () => {
                                     name="fullName"
                                     value={FullName}
                                     autoComplete="off"
-                                    className=" border-2 border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
+                                    className=" border-2 focus:outline-none border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
                                     onChange={(event) =>
                                         setFullName(event.target.value)
                                     }
@@ -208,7 +208,7 @@ const Registration = () => {
                                         name="password"
                                         value={Password}
                                         autoComplete="off"
-                                        className=" border-2 border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
+                                        className=" border-2 focus:outline-none border-darkBlue border-opacity-30 py-[20px] px-[30px] w-full rounded-lg text-[15px]"
                                         onChange={(event) =>
                                             setPassword(event.target.value)
                                         }
@@ -240,10 +240,10 @@ const Registration = () => {
                         </form>
                         <div className="w-3/4 text-center">
                             <p className="text-[13px] font-open mt-4 text-[#03014C]">
-                                Already have an account ?{" "}
+                                Already have an account ?
                                 <span className="text-[#EA6C00] font-semibold hover:underline decoration-solid hover:cursor-pointer">
                                     Sign In
-                                </span>{" "}
+                                </span>
                             </p>
                         </div>
                     </div>
