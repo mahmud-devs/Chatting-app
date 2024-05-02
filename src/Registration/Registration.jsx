@@ -3,6 +3,7 @@ import { FaEye } from "react-icons/fa6";
 import { FaEyeSlash } from "react-icons/fa";
 import registrationImg from "../../src/assets/registration.png";
 import { ToastContainer, toast, Bounce } from "react-toastify";
+import { Link } from "react-router-dom";
 
 // ============== firebase ======================
 import {
@@ -69,17 +70,17 @@ const Registration = () => {
             createUserWithEmailAndPassword(auth, Email, Password)
                 .then((userCredential) => {
                     setloading(false);
-                    toast.success('✉️ Verificatin Email Sent!', {
+                    toast.success("✉️ Verificatin Email Sent!", {
                         position: "top-left",
                         autoClose: 6000,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
                         draggable: true,
-                        progress:undefined ,
+                        progress: undefined,
                         theme: "light",
                         transition: Bounce,
-                        });
+                    });
                     // ======= verification mail sent =======
                     sendEmailVerification(auth.currentUser).then(() => {
                         // Email verification sent!
@@ -88,9 +89,9 @@ const Registration = () => {
                 })
                 .catch((error) => {
                     setloading(false);
-                    
-                    if(error.message.includes("email")){
-                        toast.error('Email already exists', {
+
+                    if (error.message.includes("email")) {
+                        toast.error("Email already exists", {
                             position: "top-left",
                             autoClose: 6000,
                             hideProgressBar: false,
@@ -100,9 +101,8 @@ const Registration = () => {
                             progress: undefined,
                             theme: "light",
                             transition: Bounce,
-                            });
+                        });
                     }
-                    
                 });
         }
     };
@@ -241,8 +241,13 @@ const Registration = () => {
                         <div className="w-3/4 text-center">
                             <p className="text-[13px] font-open mt-4 text-[#03014C]">
                                 Already have an account ?
-                                <span className="text-[#EA6C00] font-semibold hover:underline decoration-solid hover:cursor-pointer">
-                                    Sign In
+                                <span>
+                                    <Link
+                                        className="text-[#EA6C00] font-semibold hover:underline decoration-solid hover:cursor-pointer"
+                                        to={"/login"}
+                                    >
+                                        Sign up
+                                    </Link>
                                 </span>
                             </p>
                         </div>
