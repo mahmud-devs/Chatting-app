@@ -104,7 +104,7 @@ const LoginLeft = () => {
                     // Signed in
                     console.log(userCredential);
                     // ...
-                    navigate("/home")
+                    navigate("/")
                 })
                 .catch((error) => {
                     console.log(error.message);
@@ -124,7 +124,7 @@ const LoginLeft = () => {
             const user = result.user;
             console.log(user);
             if(user){
-                navigate("/home")
+                navigate("/")
             }
         } catch (error) {
             console.log(error.message);
@@ -241,7 +241,7 @@ const LoginLeft = () => {
                         <span>
                             <Link
                                 className="text-[#EA6C00] font-semibold hover:underline decoration-solid hover:cursor-pointer"
-                                to={"/"}
+                                to={"/registration"}
                             >
                                 Sign up
                             </Link>

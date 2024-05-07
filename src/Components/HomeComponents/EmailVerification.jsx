@@ -15,7 +15,7 @@ const EmailVerification = ({email}) => {
                     </h3>
                     <p className="text-center mt-4 font-nunito font-normal text-[18px] mb-9">
                         You've entered{" "}
-                        <span className="font-open font-bold">{email ? email :""} </span> as the
+                        <span className="font-open font-bold">{email ? email :"not found"} </span> as the
                         email address for your account. Please verify this email
                         address by clicking button below.
                     </p>

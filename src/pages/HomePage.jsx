@@ -31,7 +31,7 @@ const HomePage = () => {
             <div>
                 {userInfo.emailVerified ? (
                     <div className="flex p-7 h-full gap-9">
-                        <HomeLeft active={"home"} />
+                        <HomeLeft />
                         <HomeRight />
                     </div>
                 ) : (
