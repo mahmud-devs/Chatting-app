@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaEye } from "react-icons/fa6";
 import { FaEyeSlash } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // ========= firebase =============
 import {
     getAuth,
@@ -20,6 +20,7 @@ const LoginLeft = () => {
         email: "",
         password: "",
     });
+    const navigate = useNavigate();
 
     // ========== error states ===============
     const [inputError, setinputError] = useState({
@@ -103,6 +104,7 @@ const LoginLeft = () => {
                     // Signed in
                     console.log(userCredential);
                     // ...
+                    navigate("/home")
                 })
                 .catch((error) => {
                     console.log(error.message);
@@ -121,6 +123,9 @@ const LoginLeft = () => {
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const user = result.user;
             console.log(user);
+            if(user){
+                navigate("/home")
+            }
         } catch (error) {
             console.log(error.message);
         }

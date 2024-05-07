@@ -3,7 +3,7 @@ import { FaEye } from "react-icons/fa6";
 import { FaEyeSlash } from "react-icons/fa";
 import registrationImg from "../../src/assets/registration.png";
 import { ToastContainer, toast, Bounce } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // ============== firebase ======================
 import {
@@ -19,6 +19,7 @@ const Registration = () => {
     const [Password, setPassword] = useState("");
     const [eye, seteye] = useState(false);
     const [loading, setloading] = useState(false);
+    const navigate = useNavigate()
 
     // ============= all error hook state
     const [EmailError, setEmailError] = useState("");
@@ -81,6 +82,9 @@ const Registration = () => {
                         theme: "light",
                         transition: Bounce,
                     });
+                    setTimeout(() => {
+                        navigate("/login")
+                    }, 4000);
                     // ======= verification mail sent =======
                     sendEmailVerification(auth.currentUser).then(() => {
                         // Email verification sent!
