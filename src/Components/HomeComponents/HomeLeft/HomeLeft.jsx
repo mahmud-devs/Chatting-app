@@ -10,7 +10,6 @@ import { Link, useLocation } from "react-router-dom";
 
 const HomeLeft = () => {
     const location = useLocation();
-    console.log(location.pathname.split("/")[1]);
     let active = location.pathname.split("/")[1];
     return (
         <>

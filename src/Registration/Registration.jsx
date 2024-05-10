@@ -10,16 +10,20 @@ import {
     getAuth,
     createUserWithEmailAndPassword,
     sendEmailVerification,
+    updateProfile,
+    onAuthStateChanged,
 } from "firebase/auth";
+import { getDatabase, ref, set, push } from "firebase/database";
 
 const Registration = () => {
     const auth = getAuth();
+    const db = getDatabase();
     const [Email, setEmail] = useState("");
     const [FullName, setFullName] = useState("");
     const [Password, setPassword] = useState("");
     const [eye, seteye] = useState(false);
     const [loading, setloading] = useState(false);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     // ============= all error hook state
     const [EmailError, setEmailError] = useState("");
@@ -82,9 +86,31 @@ const Registration = () => {
                         theme: "light",
                         transition: Bounce,
                     });
-                    setTimeout(() => {
-                        navigate("/login")
-                    }, 4000);
+                    console.log(userCredential);
+
+                    // ============ update user profile==============
+                    updateProfile(auth.currentUser, {
+                        displayName: FullName,
+                    })
+                        .then(() => {
+                            let dbRef = ref(db, "users/");
+                            set(push(dbRef), {
+                                username: userCredential.user.displayName,
+                                email: userCredential.user.email,
+                            }).then(() => {
+                                console.log("data upload done");
+                            }).catch((error)=>{
+                                console.log("gata upload failed",error);
+                            })
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+
+                    // ============ update user profile==============
+                    // setTimeout(() => {
+                    //     navigate("/login");
+                    // }, 4000);
                     // ======= verification mail sent =======
                     sendEmailVerification(auth.currentUser).then(() => {
                         // Email verification sent!
