@@ -108,9 +108,9 @@ const Registration = () => {
                         });
 
                     // ============ update user profile==============
-                    // setTimeout(() => {
-                    //     navigate("/login");
-                    // }, 4000);
+                    setTimeout(() => {
+                        navigate("/login");
+                    }, 3000);
                     // ======= verification mail sent =======
                     sendEmailVerification(auth.currentUser).then(() => {
                         // Email verification sent!

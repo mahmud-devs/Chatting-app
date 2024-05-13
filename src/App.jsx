@@ -5,7 +5,7 @@ import EmailVerification from "./Components/HomeComponents/EmailVerification";
 import NotificationPage from "./pages/NotificationPage";
 import ChattingPage from "./pages/ChattingPage";
 import SettingPage from "./pages/SettingPage";
-
+import Home from "./pages/Home";
 // ======== router =======
 import {
     createBrowserRouter,
@@ -14,12 +14,14 @@ import {
     RouterProvider,
 } from "react-router-dom";
 
+
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route>
             <Route path="/registration" element={<RegistrationPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/" element={<HomePage />}>
+            <Route path="/" element={<Home />}>
+                <Route path="" element={<HomePage />} />
                 <Route path="/chat" element={<ChattingPage />} />
                 <Route path="/notification" element={<NotificationPage />} />
                 <Route path="/setting" element={<SettingPage />} />

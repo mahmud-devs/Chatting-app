@@ -9,66 +9,66 @@ import { LuLogOut } from "react-icons/lu";
 import { Link, useLocation } from "react-router-dom";
 
 const HomeLeft = () => {
-    const location = useLocation();
-    let active = location.pathname.split("/")[1];
-    return (
-        <>
-            <div className="w-[10%] h-[100%] bg-btnColor rounded-3xl flex flex-col py-9 items-center">
-                <picture>
-                    <img src={porfilePic} alt={porfilePic} />
-                </picture>
-                <ul className="mt-12 text-white text-[35px] flex flex-col gap-3  items-center ps-5">
-                    <li
-                        className={
-                            active === ""
-                                ? " bg-white relative text-btnColor pl-[35px] pr-[56px] pt-3 pb-2 rounded-s-2xl cursor-pointer after:h-[100%] after:w-3 after:absolute after:right-0 after:top-0 after:bg-btnColor after:rounded-s-full"
-                                : "opacity-80 pr-[26px] pt-3 pb-2 cursor-pointer "
-                        }
-                    >
-                        <Link>
-                            <IoHomeOutline />
-                        </Link>
-                    </li>
-                    <li
-                        className={
-                            active === "chat"
-                                ? " bg-white relative text-btnColor pl-[35px] pr-[56px] pt-3 pb-2 rounded-s-2xl cursor-pointer after:h-[100%] after:w-3 after:absolute after:right-0 after:top-0 after:bg-btnColor after:rounded-s-full"
-                                : "opacity-80 pr-[26px] pt-3 pb-2 cursor-pointer "
-                        }
-                    >
-                        <Link to={"/chat"}>
-                            <IoChatbubbleEllipsesOutline />
-                        </Link>
-                    </li>
-                    <li
-                        className={
-                            active === "notification"
-                                ? " bg-white relative text-btnColor pl-[35px] pr-[56px] pt-3 pb-2 rounded-s-2xl cursor-pointer after:h-[100%] after:w-3 after:absolute after:right-0 after:top-0 after:bg-btnColor after:rounded-s-full"
-                                : "opacity-80 pr-[26px] pt-3 pb-2 cursor-pointer "
-                        }
-                    >
-                        <Link to={"/notification"}>
-                            <FaRegBell />
-                        </Link>
-                    </li>
-                    <li
-                        className={
-                            active === "setting"
-                                ? "bg-white relative text-btnColor pl-[35px] pr-[56px] pt-3 pb-2 rounded-s-2xl cursor-pointer after:h-[100%] after:w-3 after:absolute after:right-0 after:top-0 after:bg-btnColor after:rounded-s-full"
-                                : "opacity-80 pr-[26px] pt-3 pb-2 cursor-pointer"
-                        }
-                    >
-                        <Link to={"/setting"}>
-                            <BsGear />
-                        </Link>
-                    </li>
-                    <li className="mt-10 opacity-100 text-white pr-[26px] pt-3 pb-2 cursor-pointer">
-                        <LuLogOut />
-                    </li>
-                </ul>
-            </div>
-        </>
-    );
+  const location = useLocation();
+  let active = location.pathname.split("/")[1];
+  return (
+    <>
+      <div className="flex h-[100%] w-[10%] flex-col items-center rounded-3xl bg-btnColor py-9">
+        <picture>
+          <img src={porfilePic} alt={porfilePic} />
+        </picture>
+        <ul className="mt-12 flex flex-col items-center gap-3 ps-5  text-[35px] text-white">
+          <li
+            className={
+              active === ""
+                ? "relative cursor-pointer rounded-s-2xl bg-white  pb-2 pl-[35px] pr-[56px] pt-3 text-btnColor after:absolute after:right-0 after:top-0 after:h-[100%] after:w-3 after:rounded-s-full after:bg-btnColor"
+                : "cursor-pointer pb-2 pr-[26px] pt-3 opacity-80 "
+            }
+          >
+            <Link>
+              <IoHomeOutline />
+            </Link>
+          </li>
+          <li
+            className={
+              active === "chat"
+                ? " relative cursor-pointer rounded-s-2xl bg-white pb-2 pl-[35px] pr-[56px] pt-3 text-btnColor after:absolute after:right-0 after:top-0 after:h-[100%] after:w-3 after:rounded-s-full after:bg-btnColor"
+                : "cursor-pointer pb-2 pr-[26px] pt-3 opacity-80 "
+            }
+          >
+            <Link to={"/chat"}>
+              <IoChatbubbleEllipsesOutline />
+            </Link>
+          </li>
+          <li
+            className={
+              active === "notification"
+                ? " relative cursor-pointer rounded-s-2xl bg-white pb-2 pl-[35px] pr-[56px] pt-3 text-btnColor after:absolute after:right-0 after:top-0 after:h-[100%] after:w-3 after:rounded-s-full after:bg-btnColor"
+                : "cursor-pointer pb-2 pr-[26px] pt-3 opacity-80 "
+            }
+          >
+            <Link to={"/notification"}>
+              <FaRegBell />
+            </Link>
+          </li>
+          <li
+            className={
+              active === "setting"
+                ? "relative cursor-pointer rounded-s-2xl bg-white pb-2 pl-[35px] pr-[56px] pt-3 text-btnColor after:absolute after:right-0 after:top-0 after:h-[100%] after:w-3 after:rounded-s-full after:bg-btnColor"
+                : "cursor-pointer pb-2 pr-[26px] pt-3 opacity-80"
+            }
+          >
+            <Link to={"/setting"}>
+              <BsGear />
+            </Link>
+          </li>
+          <li className="mt-10 cursor-pointer pb-2 pr-[26px] pt-3 text-white opacity-100">
+            <LuLogOut />
+          </li>
+        </ul>
+      </div>
+    </>
+  );
 };
 
 export default HomeLeft;
