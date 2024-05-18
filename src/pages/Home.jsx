@@ -31,7 +31,7 @@ const Home = () => {
             <div>
                 <div>
                     {userInfo.emailVerified ? (
-                        <div className="flex p-7 h-full gap-9">
+                        <div className="flex p-5 h-full gap-9">
                             <HomeLeft />
                             <HomeRight />
                         </div>

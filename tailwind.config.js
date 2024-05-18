@@ -16,6 +16,7 @@ export default {
       gray: "#ffffff99",
       textColor: "#03014C",
       ptext: "#4D4D4D",
+      green: "#00FF75",
     },
     fontFamily: {
       open: ["Open Sans", "sans-serif"],
@@ -23,5 +24,8 @@ export default {
       popin: ["Poppins", "sans-serif"],
     },
   },
-  plugins: [],
+  plugins: [
+    // ...
+    require('tailwind-scrollbar'),
+  ],
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import porfilePic from "../../../assets/homeLeft/profile.png";
 import { IoHomeOutline } from "react-icons/io5";
 
@@ -7,16 +7,59 @@ import { FaRegBell } from "react-icons/fa6";
 import { BsGear } from "react-icons/bs";
 import { LuLogOut } from "react-icons/lu";
 import { Link, useLocation } from "react-router-dom";
+import { FaCloudArrowUp } from "react-icons/fa6";
+
+import { Uploader } from "uploader";
 
 const HomeLeft = () => {
   const location = useLocation();
   let active = location.pathname.split("/")[1];
+
+  // ========== all states ==========
+
+  const [photoUrl, setphotoUrl] = useState("");
+
+  // ========= image uploader ============
+  const uploader = Uploader({
+    apiKey: "free",
+  });
+
+  // ==========handle image uploaderr ============
+
+  const handleImageUploader = () => {
+    uploader
+      .open({ multi: false, mimeTypes: ["image/*"] })
+      .then((files) => {
+        if (files.length === 0) {
+          console.log("No files selected.");
+        } else {
+          setphotoUrl(files[0].fileUrl);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+  console.log(photoUrl, "link paisi");
   return (
     <>
-      <div className="flex h-[100%] w-[10%] flex-col items-center rounded-3xl bg-btnColor py-9">
-        <picture>
-          <img src={porfilePic} alt={porfilePic} />
-        </picture>
+      <div className="flex h-[100%] w-[10%] flex-col  items-center rounded-3xl  bg-btnColor py-9">
+        <div
+          className="relative h-[100px] w-[100px] rounded-full bg-customBlack "
+          onClick={handleImageUploader}
+        >
+          <picture>
+            <img
+              className="h-[100%] w-[100%] rounded-full object-cover"
+              src={photoUrl? photoUrl : porfilePic}
+              alt={porfilePic}
+            />
+          </picture>
+          <div className="absolute left-0 top-0 flex h-[100%] w-[100%] cursor-pointer items-center justify-center rounded-full border-[4px] border-white bg-[#000000a3]  opacity-0 transition-all duration-300 hover:opacity-100">
+            <FaCloudArrowUp className="text-[30px] text-white" />
+          </div>
+        </div>
+
         <ul className="mt-12 flex flex-col items-center gap-3 ps-5  text-[35px] text-white">
           <li
             className={
