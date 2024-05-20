@@ -86,7 +86,8 @@ const Registration = () => {
                         theme: "light",
                         transition: Bounce,
                     });
-                    console.log(userCredential);
+                    // console.log(userCredential);
+                    // console.log(userCredential.user.uid);
 
                     // ============ update user profile==============
                     updateProfile(auth.currentUser, {
@@ -97,6 +98,9 @@ const Registration = () => {
                             set(push(dbRef), {
                                 username: userCredential.user.displayName,
                                 email: userCredential.user.email,
+                                uid: userCredential.user.uid,
+                                profile_picture:"",
+                                
                             }).then(() => {
                                 console.log("data upload done");
                             }).catch((error)=>{

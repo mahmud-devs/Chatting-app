@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import porfilePic from "../../../assets/homeLeft/profile.png";
 import { IoHomeOutline } from "react-icons/io5";
 
@@ -8,10 +8,12 @@ import { BsGear } from "react-icons/bs";
 import { LuLogOut } from "react-icons/lu";
 import { Link, useLocation } from "react-router-dom";
 import { FaCloudArrowUp } from "react-icons/fa6";
+import { getDatabase, ref, onValue, set } from "firebase/database";
 
 import { Uploader } from "uploader";
 
 const HomeLeft = () => {
+  const db = getDatabase();
   const location = useLocation();
   let active = location.pathname.split("/")[1];
 
@@ -19,11 +21,31 @@ const HomeLeft = () => {
 
   const [photoUrl, setphotoUrl] = useState("");
 
+  const [userInfo, setuserInfo] = useState([]);
+
   // ========= image uploader ============
   const uploader = Uploader({
     apiKey: "free",
   });
 
+  // =========== user id information from database ========
+
+  useEffect(() => {
+    const starCountRef = ref(db, "/users");
+    onValue(starCountRef, (snapshot) => {
+      const userInfo = [];
+      snapshot.forEach((item) => {
+        userInfo.push({
+          userKey: item.key,
+          email: item.val().email,
+          uid: item.val().uid,
+          username: item.val().username,
+          profile_picture: item.val().profile_picture,
+        });
+        setuserInfo(userInfo);
+      });
+    });
+  }, []);
   // ==========handle image uploaderr ============
 
   const handleImageUploader = () => {
@@ -34,13 +56,19 @@ const HomeLeft = () => {
           console.log("No files selected.");
         } else {
           setphotoUrl(files[0].fileUrl);
+          set(ref(db, "users/" + userInfo[0].userKey), {
+            username: userInfo[0].username,
+            email: userInfo[0].email,
+            uid: userInfo[0].uid,
+            profile_picture: files[0].fileUrl,
+          });
         }
       })
       .catch((err) => {
         console.error(err);
       });
   };
-  console.log(photoUrl, "link paisi");
+
   return (
     <>
       <div className="flex h-[100%] w-[10%] flex-col  items-center rounded-3xl  bg-btnColor py-9">
@@ -51,7 +79,8 @@ const HomeLeft = () => {
           <picture>
             <img
               className="h-[100%] w-[100%] rounded-full object-cover"
-              src={photoUrl? photoUrl : porfilePic}
+              // src={userInfo ? userInfo[0].profile_picture : porfilePic}
+              src={photoUrl ? photoUrl : porfilePic}
               alt={porfilePic}
             />
           </picture>
@@ -60,7 +89,15 @@ const HomeLeft = () => {
           </div>
         </div>
 
-        <ul className="mt-12 flex flex-col items-center gap-3 ps-5  text-[35px] text-white">
+        {userInfo.length > 0 && (
+          <h2 className="mt-2 font-popin text-[20px] font-semibold capitalize text-white">
+            {userInfo
+              ? userInfo[0].username.split(" ")[0].slice(0, 8)
+              : "user name"}
+          </h2>
+        )}
+
+        <ul className="mt-4 flex flex-col items-center gap-3 ps-5  text-[35px] text-white">
           <li
             className={
               active === ""
