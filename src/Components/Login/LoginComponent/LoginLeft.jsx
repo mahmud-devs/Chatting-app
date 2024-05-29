@@ -12,7 +12,7 @@ import {
   signInWithRedirect,
   getRedirectResult,
 } from "firebase/auth";
-
+import { getDatabase, ref, set, push } from "firebase/database";
 const LoginLeft = () => {
   // ========== all states =============
   const [eye, seteye] = useState(false);
@@ -34,8 +34,9 @@ const LoginLeft = () => {
   // =========== firebase auth & google provider ==============
 
   const auth = getAuth();
+  const db = getDatabase();
   const provider = new GoogleAuthProvider();
-
+  provider.addScope("email");
   // ============= handleInput all functionality ==============
 
   const HandleInput = (e) => {
@@ -113,47 +114,63 @@ const LoginLeft = () => {
 
   // =================== HandleGoogleLogin functionality =============
 
-  // const HandleLoginWithGoogle = async () => {
-  //     try {
-  //         const result = await signInWithPopup(auth, provider);
-  //         const credential = GoogleAuthProvider.credentialFromResult(result);
-  //         const user = result.user;
-  //         console.log(user);
-  //         if(user){
-  //             navigate("/")
-  //         }
-  //     } catch (error) {
-  //         console.log(error.message);
-  //     }
-  // };
+  const HandleLoginWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const user = result.user;
 
-  const HandleLoginWithGoogle = () => {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
-        console.log(user)
-        if(user){
-            navigate("/")
-        }
+      if (user) {
         
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-      });
+        const { photoUrl, displayName, localId } = user.reloadUserInfo;
+        let dbRef = ref(db, "users/");
+        set(push(dbRef), {
+          username: displayName,
+          email: user.reloadUserInfo.providerUserInfo[0].email,
+          uid: localId,
+          profile_picture: photoUrl,
+        })
+          .then(() => {
+            console.log("data upload done");
+          })
+          .catch((error) => {
+            console.log("gata upload failed", error);
+          });
+        console.log(user);
+        navigate("/")
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
   };
+
+  // const HandleLoginWithGoogle = () => {
+  //   signInWithPopup(auth, provider)
+  //     .then((result) => {
+  //       // This gives you a Google Access Token. You can use it to access the Google API.
+  //       const credential = GoogleAuthProvider.credentialFromResult(result);
+  //       const token = credential.accessToken;
+  //       // The signed-in user info.
+  //       const user = result.user;
+  //       // IdP data available using getAdditionalUserInfo(result)
+  //       // ...
+  //       console.log(user)
+  //       if(user){
+  //           navigate("/")
+  //       }
+
+  //     })
+  //     .catch((error) => {
+  //       // Handle Errors here.
+  //       const errorCode = error.code;
+  //       const errorMessage = error.message;
+  //       // The email of the user's account used.
+  //       const email = error.customData.email;
+  //       // The AuthCredential type that was used.
+  //       const credential = GoogleAuthProvider.credentialFromError(error);
+  //       // ...
+  //     });
+  // };
 
   // ================== all things return ===============
 

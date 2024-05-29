@@ -17,6 +17,7 @@ export default {
       textColor: "#03014C",
       ptext: "#4D4D4D",
       green: "#00FF75",
+      red:"#ff0000",
     },
     fontFamily: {
       open: ["Open Sans", "sans-serif"],

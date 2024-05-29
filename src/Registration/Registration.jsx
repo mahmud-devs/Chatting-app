@@ -4,7 +4,7 @@ import { FaEyeSlash } from "react-icons/fa";
 import registrationImg from "../../src/assets/registration.png";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
-
+import moment from 'moment';
 // ============== firebase ======================
 import {
     getAuth,
@@ -100,6 +100,7 @@ const Registration = () => {
                                 email: userCredential.user.email,
                                 uid: userCredential.user.uid,
                                 profile_picture:"",
+                                createdDate:moment().format('MM//DD/YYYY, h:mm:ss a'),
                                 
                             }).then(() => {
                                 console.log("data upload done");

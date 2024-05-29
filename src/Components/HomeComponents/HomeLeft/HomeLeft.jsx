@@ -8,12 +8,16 @@ import { BsGear } from "react-icons/bs";
 import { LuLogOut } from "react-icons/lu";
 import { Link, useLocation } from "react-router-dom";
 import { FaCloudArrowUp } from "react-icons/fa6";
-import { getDatabase, ref, onValue, set } from "firebase/database";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getDatabase, ref, onValue, update, set } from "firebase/database";
+import { FaUserAlt } from "react-icons/fa";
 
 import { Uploader } from "uploader";
 
+
 const HomeLeft = () => {
   const db = getDatabase();
+  const auth = getAuth();
   const location = useLocation();
   let active = location.pathname.split("/")[1];
 
@@ -31,21 +35,22 @@ const HomeLeft = () => {
   // =========== user id information from database ========
 
   useEffect(() => {
-    const starCountRef = ref(db, "/users");
-    onValue(starCountRef, (snapshot) => {
-      const userInfo = [];
-      snapshot.forEach((item) => {
-        userInfo.push({
-          userKey: item.key,
-          email: item.val().email,
-          uid: item.val().uid,
-          username: item.val().username,
-          profile_picture: item.val().profile_picture,
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid } = user;
+        const starCountRef = ref(db, "/users");
+        onValue(starCountRef, (snapshot) => {
+          snapshot.forEach((item) => {
+            if (item.val().uid === uid) {
+              setuserInfo(Object.assign(item.val(), { userKey: item.key }));
+            }
+            console.log(item.val());
+          });
         });
-        setuserInfo(userInfo);
-      });
+      }
     });
-  }, []);
+  }, [db]);
+
   // ==========handle image uploaderr ============
 
   const handleImageUploader = () => {
@@ -56,10 +61,14 @@ const HomeLeft = () => {
           console.log("No files selected.");
         } else {
           setphotoUrl(files[0].fileUrl);
-          set(ref(db, "users/" + userInfo[0].userKey), {
-            username: userInfo[0].username,
-            email: userInfo[0].email,
-            uid: userInfo[0].uid,
+          // set(ref(db, "users/" + userInfo[0].userKey), {
+          //   username: userInfo[0].username,
+          //   email: userInfo[0].email,
+          //   uid: userInfo[0].uid,
+          //   profile_picture: files[0].fileUrl,
+          // });
+          const starCountRef = ref(db, `users/${userInfo.userKey}`);
+          update(starCountRef, {
             profile_picture: files[0].fileUrl,
           });
         }
@@ -79,23 +88,23 @@ const HomeLeft = () => {
           <picture>
             <img
               className="h-[100%] w-[100%] rounded-full object-cover"
-              // src={userInfo ? userInfo[0].profile_picture : porfilePic}
-              src={photoUrl ? photoUrl : porfilePic}
+              src={userInfo ? userInfo.profile_picture : porfilePic}
               alt={porfilePic}
             />
           </picture>
+
+          {/* <FaUserAlt className="absolute left-[50%] top-[50%] text-white z-10"/> */}
+
           <div className="absolute left-0 top-0 flex h-[100%] w-[100%] cursor-pointer items-center justify-center rounded-full border-[4px] border-white bg-[#000000a3]  opacity-0 transition-all duration-300 hover:opacity-100">
             <FaCloudArrowUp className="text-[30px] text-white" />
           </div>
         </div>
 
-        {userInfo.length > 0 && (
+        
           <h2 className="mt-2 font-popin text-[20px] font-semibold capitalize text-white">
-            {userInfo
-              ? userInfo[0].username.split(" ")[0].slice(0, 8)
-              : "user name"}
+            {userInfo.username && userInfo.username.split(" ")[0].slice(0, 8)}...
           </h2>
-        )}
+        
 
         <ul className="mt-4 flex flex-col items-center gap-3 ps-5  text-[35px] text-white">
           <li
