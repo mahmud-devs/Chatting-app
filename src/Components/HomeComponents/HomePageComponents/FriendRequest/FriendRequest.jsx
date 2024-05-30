@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import ProfileImage1 from "../../../../assets/HomePageImage/one.gif";
-import ProfileImage2 from "../../../../assets/HomePageImage/two.gif";
-import ProfileImage3 from "../../../../assets/HomePageImage/three.gif";
+import { FaUserFriends } from "react-icons/fa";
 import ProfileImage4 from "../../../../assets/HomePageImage/four.gif";
 import ProfileImage5 from "../../../../assets/HomePageImage/five.gif";
 import { FaPlus } from "react-icons/fa";
@@ -42,6 +40,7 @@ const FriendRequest = () => {
   }, [db]);
   // console.log(FriendRequestList);
 
+
   // handle friend request accept function implementation
 
   const handleAccept = (item) => {
@@ -67,9 +66,17 @@ const FriendRequest = () => {
       <div className="w-[32%]">
         <div className=" w-[100%] rounded-2xl ps-[17px] pt-[17px] shadow-md">
           <div className="flex items-center justify-between pb-[5px] pe-[16px]">
-            <h3 className="font-popin text-[20px] font-semibold text-customBlack">
-              Friend Request
-            </h3>
+          <button
+              type="button"
+              class="relative  inline-flex items-center rounded-lg bg-btnColor px-5 py-2.5 text-center text-[17px] font-medium text-white focus:outline-none focus:ring-4 focus:ring-btnColor"
+            >
+              {FriendRequestList.length>0? (<FaUserFriends className="me-2 text-[20px] animate-pulse"  />):(<FaUserFriends className="me-2 text-[20px]" />)}
+              
+              Friend request
+              <div class="absolute  -end-2 -top-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-red text-xs font-bold text-white">
+                {FriendRequestList.length}
+              </div>
+            </button>
             <BsThreeDotsVertical className="text-[25px] text-btnColor" />
           </div>
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import ProfileImage1 from "../../../../assets/HomePageImage/one.gif";
 import { FaUserFriends } from "react-icons/fa";
+import { FaUsers } from "react-icons/fa";
 
 import { FaPlus } from "react-icons/fa";
 import { FaMinus } from "react-icons/fa";
@@ -88,9 +89,16 @@ const UserList = () => {
       <div className="w-[32%]">
         <div className=" w-[100%] rounded-2xl ps-[17px] pt-[17px] shadow-md">
           <div className="flex items-center justify-between pb-[5px] pe-[16px]">
-            <h3 className="font-popin text-[20px] font-semibold text-customBlack">
-              User List
-            </h3>
+            <button
+              type="button"
+              class="relative  inline-flex items-center rounded-lg bg-btnColor px-5 py-2.5 text-center text-[17px] font-medium text-white focus:outline-none focus:ring-4 focus:ring-btnColor"
+            >
+              <FaUsers className="me-2 text-[20px] animate-pulse" />
+              User list
+              <div class="absolute  -end-2 -top-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-red text-xs font-bold text-white">
+                {UserList.length}
+              </div>
+            </button>
             <BsThreeDotsVertical className="text-[25px] text-btnColor" />
           </div>
 
@@ -129,8 +137,7 @@ const UserList = () => {
                   {FriendsUser.includes(auth.currentUser.uid + item.uid) ? (
                     <div>
                       <button className="rounded-lg bg-btnColor p-[8px] font-popin text-[15px] font-semibold text-white">
-                      <FaUserFriends />
-
+                        <FaUserFriends />
                       </button>
                     </div>
                   ) : FriendRequestUser.includes(
