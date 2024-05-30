@@ -38,7 +38,28 @@ const FriendList = () => {
       setFriendsData(friendsArr);
     });
   }, [db]);
-  // console.log(FriendsData.length);
+  // console.log(auth.currentUser);
+
+  // =============== handle block function implementaion =============
+
+  const handleBlock = (item) => {
+    // console.log(item);
+    let dbBlockList = ref(db, "Block/");
+    set(push(dbBlockList), {
+      blockedByuid: auth.currentUser.uid,
+      blockedByName: auth.currentUser.displayName,
+      blockedByEmail: auth.currentUser.email,
+      blockedUseruid: item.senderUid,
+      blockedUserName: item.senderName,
+      blockedUserEmail: item.senderEmail,
+      blockedUserProfilePic: item.senderProfilePic,
+      createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+    }).then(() => {
+      const blockListdbRef = ref(db, `Friends/${item.friendKey}`);
+      remove(blockListdbRef);
+      
+    });
+  };
 
   return (
     <>
@@ -93,13 +114,16 @@ const FriendList = () => {
                       {item.messege ? item.messege : "messege deleted"}
                     </p>
                   </div>
-                  <div className="w-[29%] flex items-center justify-center flex-col gap-y-2">
+                  <div className="flex w-[29%] flex-col items-center justify-center gap-y-2">
                     <p className=" font-popin text-[13px] font-medium opacity-50">
                       {moment(item.createdDate).fromNow()}
                     </p>
-                    <button className="rounded-lg bg-btnColor p-[8px] font-popin text-[15px] font-semibold text-white">
-                        Block
-                      </button>
+                    <button
+                      onClick={() => handleBlock(item)}
+                      className="rounded-lg bg-btnColor p-[8px] font-popin text-[15px] font-semibold text-white"
+                    >
+                      Block
+                    </button>
                   </div>
                 </div>
               ))

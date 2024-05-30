@@ -10,6 +10,8 @@ import { FaMinus } from "react-icons/fa";
 import { getDatabase, ref, onValue, set, push } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import moment from "moment";
+
+import { ToastContainer, toast, Bounce } from "react-toastify";
 // ============= user list ================
 
 const UserList = () => {
@@ -17,6 +19,7 @@ const UserList = () => {
   const [currentUserdata, setcurrentUserdata] = useState({});
   const [FriendRequestUser, setFriendRequestUser] = useState([]);
   const [FriendsUser, setFriendsUser] = useState([]);
+  const [blockList, setblockList] = useState([]);
   const db = getDatabase();
   const auth = getAuth();
   useEffect(() => {
@@ -37,7 +40,7 @@ const UserList = () => {
   // console.log(currentUserdata.profile_picture);
   // console.log(moment().format("MM//DD/YYYY, h:mm:ss a"));
 
-  //  handle friend request function implementation
+  // todo: handle friend request function implementation
   // @params (item)
   //
   const handleFriendRequest = (item) => {
@@ -54,6 +57,18 @@ const UserList = () => {
       receiverKey: item.userKey,
       receiverProfilePic: item.profile_picture,
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+    }).then(() => {
+      toast.success("👥 Friend request Sent!", {
+        position: "top-left",
+        autoClose: 6000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     });
   };
 
@@ -79,10 +94,25 @@ const UserList = () => {
         friendsArr.push(item.val().senderUid + item.val().receiverUid);
       });
       setFriendsUser(friendsArr);
+      // console.log(friendsArr);
     });
   }, [db]);
 
   // console.log(FriendsUser);
+
+   // =============== read data from blockList database ===============
+   useEffect(() => {
+    const blockdbRef = ref(db, "Block/");
+    onValue(blockdbRef, (snapshot) => {
+      let blockArr = [];
+      snapshot.forEach((item) => {
+        blockArr.push(item.val().blockedUseruid + item.val().blockedByuid);
+      });
+      // console.log(blockArr);
+      setblockList(blockArr);
+    });
+  }, [db]);
+
 
   return (
     <>
@@ -93,7 +123,7 @@ const UserList = () => {
               type="button"
               class="relative  inline-flex items-center rounded-lg bg-btnColor px-5 py-2.5 text-center text-[17px] font-medium text-white focus:outline-none focus:ring-4 focus:ring-btnColor"
             >
-              <FaUsers className="me-2 text-[20px] animate-pulse" />
+              <FaUsers className="me-2 animate-pulse text-[20px]" />
               User list
               <div class="absolute  -end-2 -top-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-red text-xs font-bold text-white">
                 {UserList.length}
@@ -134,7 +164,7 @@ const UserList = () => {
                     </p>
                   </div>
 
-                  {FriendsUser.includes(auth.currentUser.uid + item.uid) ? (
+                  {FriendsUser.includes(auth.currentUser.uid + item.uid) || blockList.includes(auth.currentUser.uid + item.uid) ? (
                     <div>
                       <button className="rounded-lg bg-btnColor p-[8px] font-popin text-[15px] font-semibold text-white">
                         <FaUserFriends />
