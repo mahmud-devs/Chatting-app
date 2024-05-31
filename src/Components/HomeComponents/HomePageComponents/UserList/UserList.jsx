@@ -100,8 +100,8 @@ const UserList = () => {
 
   // console.log(FriendsUser);
 
-   // =============== read data from blockList database ===============
-   useEffect(() => {
+  // =============== read data from blockList database ===============
+  useEffect(() => {
     const blockdbRef = ref(db, "Block/");
     onValue(blockdbRef, (snapshot) => {
       let blockArr = [];
@@ -112,7 +112,6 @@ const UserList = () => {
       setblockList(blockArr);
     });
   }, [db]);
-
 
   return (
     <>
@@ -164,8 +163,18 @@ const UserList = () => {
                     </p>
                   </div>
 
-                  {FriendsUser.includes(auth.currentUser.uid + item.uid) || blockList.includes(auth.currentUser.uid + item.uid) ? (
+                  {blockList.includes(auth.currentUser.uid + item.uid) ? (
+                    <div className="relative">
+                      {/* ======================== first layer  ======================== */}
+                      <button className="rounded-lg  bg-btnColor p-[8px] font-popin text-[15px] font-semibold text-white">
+                        <FaUserFriends />
+                      </button>
+                      <div className="absolute left-2/4 top-[-9%] h-[118%] w-[3px] -translate-x-1/2 rotate-[135deg] rounded-sm bg-white"></div>
+                    </div>
+                  ) : FriendsUser.includes(auth.currentUser.uid + item.uid) ? (
                     <div>
+                      {/* ======================== second layer  ======================== */}
+
                       <button className="rounded-lg bg-btnColor p-[8px] font-popin text-[15px] font-semibold text-white">
                         <FaUserFriends />
                       </button>
@@ -174,6 +183,8 @@ const UserList = () => {
                       auth.currentUser.uid + item.uid,
                     ) ? (
                     <div>
+                      {/* ======================== third layer  ======================== */}
+
                       <button className="rounded-lg bg-btnColor p-[8px] font-popin text-[15px] font-semibold text-white">
                         <FaMinus />
                       </button>

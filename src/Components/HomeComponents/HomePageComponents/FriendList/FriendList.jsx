@@ -5,6 +5,7 @@ import ProfileImage1 from "../../../../assets/HomePageImage/one.gif";
 import ProfileImage2 from "../../../../assets/HomePageImage/two.gif";
 import ProfileImage3 from "../../../../assets/HomePageImage/three.gif";
 import { FaUserFriends } from "react-icons/fa";
+import { ToastContainer, toast, Bounce } from "react-toastify";
 
 // =============
 import {
@@ -58,6 +59,18 @@ const FriendList = () => {
       const blockListdbRef = ref(db, `Friends/${item.friendKey}`);
       remove(blockListdbRef);
       
+    }).then(() => {
+      toast.error(`${item.senderName} Blocked`, {
+        position: "top-right",
+        autoClose: 6000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     });
   };
 
