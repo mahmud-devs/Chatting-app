@@ -103,13 +103,13 @@ const Registration = () => {
                                 createdDate:moment().format('MM//DD/YYYY, h:mm:ss a'),
                                 
                             }).then(() => {
-                                console.log("data upload done");
+                                // console.log("data upload done");
                             }).catch((error)=>{
-                                console.log("gata upload failed",error);
+                                // console.log("gata upload failed",error);
                             })
                         })
                         .catch((error) => {
-                            console.log(error);
+                            // console.log(error);
                         });
 
                     // ============ update user profile==============

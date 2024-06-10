@@ -14,7 +14,6 @@ import { FaUserAlt } from "react-icons/fa";
 
 import { Uploader } from "uploader";
 
-
 const HomeLeft = () => {
   const db = getDatabase();
   const auth = getAuth();
@@ -85,13 +84,23 @@ const HomeLeft = () => {
           className="relative h-[100px] w-[100px] rounded-full bg-customBlack "
           onClick={handleImageUploader}
         >
-          <picture>
-            <img
-              className="h-[100%] w-[100%] rounded-full object-cover"
-              src={userInfo ? userInfo.profile_picture : porfilePic}
-              alt={porfilePic}
-            />
-          </picture>
+          {userInfo.profile_picture  ? (
+            <picture>
+              <img
+                className="h-[100%] w-[100%] rounded-full object-cover"
+                src={userInfo ? userInfo.profile_picture : porfilePic}
+                alt={porfilePic}
+              />
+            </picture>
+          ) : (
+            <picture>
+              <img
+                className="h-[100%] w-[100%] rounded-full object-cover"
+                src={porfilePic}
+                alt={porfilePic}
+              />
+            </picture>
+          )}
 
           {/* <FaUserAlt className="absolute left-[50%] top-[50%] text-white z-10"/> */}
 
@@ -100,11 +109,9 @@ const HomeLeft = () => {
           </div>
         </div>
 
-        
-          <h2 className="mt-2 font-popin text-[20px] font-semibold capitalize text-white">
-            {userInfo.username && userInfo.username.split(" ")[0].slice(0, 8)}...
-          </h2>
-        
+        <h2 className="mt-2 font-popin text-[20px] font-semibold capitalize text-white">
+          {userInfo.username && userInfo.username.split(" ")[0].slice(0, 8)}...
+        </h2>
 
         <ul className="mt-4 flex flex-col items-center gap-3 ps-5  text-[35px] text-white">
           <li
