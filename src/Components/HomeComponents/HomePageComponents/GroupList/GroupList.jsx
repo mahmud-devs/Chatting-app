@@ -9,11 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import starterImg from "../../../../assets/defaultImg.jpg";
 import Search from "../HomePageCommonComponents/Search";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import ProfileImage1 from "../../../../assets/HomePageImage/one.gif";
-import ProfileImage2 from "../../../../assets/HomePageImage/two.gif";
-import ProfileImage3 from "../../../../assets/HomePageImage/three.gif";
-import ProfileImage4 from "../../../../assets/HomePageImage/four.gif";
-import ProfileImage5 from "../../../../assets/HomePageImage/five.gif";
+
 import { IoMdCloseCircleOutline } from "react-icons/io";
 
 import { ToastContainer, toast, Bounce } from "react-toastify";
@@ -51,44 +47,6 @@ import moment from "moment";
 // ============== firebase storage ================
 
 const GroupList = () => {
-  const users = [
-    {
-      id: 1,
-      image: ProfileImage1,
-      title: "Friends Reunion",
-      description: "Hi Guys, Wassup!",
-      button: "join",
-    },
-    {
-      id: 2,
-      image: ProfileImage2,
-      title: "Friends Reunion",
-      description: "Hi Guys, Wassup!",
-      button: "join",
-    },
-    {
-      id: 3,
-      image: ProfileImage3,
-      title: "Friends Reunion",
-      description: "Hi Guys, Wassup!",
-      button: "join",
-    },
-    {
-      id: 4,
-      image: ProfileImage4,
-      title: "Friends Reunion",
-      description: "Hi Guys, Wassup!",
-      button: "join",
-    },
-    {
-      id: 5,
-      image: ProfileImage5,
-      title: "Friends Reunion",
-      description: "Hi Guys, Wassup!",
-      button: "join",
-    },
-  ];
-
   // ============ firebase storage ===============
   const storage = getStorage();
   const db = getDatabase();
@@ -111,8 +69,11 @@ const GroupList = () => {
   function openModal() {
     setIsOpen(true);
   }
-  // ============= all states ===================
+  // ============= all data read and write states ===================
   const [myGroup, setmyGroup] = useState([]);
+  const [joinGroupReq, setjoinGroupReq] = useState([]);
+  const [userList, setuserList] = useState([]);
+  const [GroupMember, setGroupMember] = useState([]);
   // ============= input  state ==============
   const [allInput, setallInput] = useState({
     groupTagName: "",
@@ -177,7 +138,7 @@ const GroupList = () => {
       });
     }
   };
-  // ============ input validation ==================
+  // ============ Handle Create Group ==================
   const handleCreatGroup = () => {
     if (!allInput.groupName) {
       setallInputError({
@@ -256,6 +217,7 @@ const GroupList = () => {
             })
             .finally(() => {
               setloading(false);
+              closeModal();
             });
         });
     }
@@ -268,11 +230,73 @@ const GroupList = () => {
     onValue(starCountRef, (snapshot) => {
       let myGroupArr = [];
       snapshot.forEach((item) => {
-        myGroupArr.push(item.val());
+        myGroupArr.push({ ...item.val(), GroupKey: item.key });
       });
       setmyGroup(myGroupArr);
     });
   }, [db]);
+
+  // ================= All User data read =======================
+  useEffect(() => {
+    const starCountRef = dbRef(db, "users/");
+    onValue(starCountRef, (snapshot) => {
+      const userArry = [];
+      snapshot.forEach((item) => {
+        if (auth.currentUser.uid === item.val().uid) {
+          setuserList(item.val());
+        }
+      });
+    });
+  }, [db]);
+
+  // console.log(userList);
+
+  // ========================= handle join group function ======================
+  const handleAccept = (item) => {
+    // console.log(item);
+
+    set(push(dbRef(db, "joinGroupRequest/")), {
+      whoWantsToJoinName: auth.currentUser.displayName,
+      whoWantsToJoinUid: auth.currentUser.uid,
+      whoWantsToJoinPhoto: userList.profile_picture,
+      GroupKey: item.GroupKey,
+      GroupTagName: item.GroupTagName,
+      GroupPhotoUrl: item.GroupPhotoUrl,
+      GroupName: item.GroupName,
+      AdminUserName: item.AdminUserName,
+      AdminUid: item.AdminUid,
+      AdminEmail: item.AdminEmail,
+      createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+    });
+  };
+  // ========================= handle join group read data ======================
+  useEffect(() => {
+    const starCountRef = dbRef(db, "joinGroupRequest/");
+    onValue(starCountRef, (snapshot) => {
+      let joinGroupReqArr = [];
+      snapshot.forEach((item) => {
+        joinGroupReqArr.push(
+          item.val().GroupKey + item.val().whoWantsToJoinUid,
+        );
+      });
+      setjoinGroupReq(joinGroupReqArr);
+    });
+  }, [db]);
+  // console.log(joinGroupReq);
+
+  // ========================= handle Group member read data ======================
+
+  useEffect(() => {
+    const starCountRef = dbRef(db, "GroupMembers/");
+    onValue(starCountRef, (snapshot) => {
+      let GroupMemberArr = [];
+      snapshot.forEach((item) => {
+        GroupMemberArr.push(item.val().GroupMemberUid + item.val().GroupKey);
+      });
+      setGroupMember(GroupMemberArr);
+    });
+  }, [db]);
+  // console.log(GroupMember);
 
   // ========================================= return ====================================
   return (
@@ -283,9 +307,15 @@ const GroupList = () => {
         </div>
         <div className="mt-[18px] w-[100%] rounded-2xl ps-[17px] pt-[17px] shadow-md">
           <div className="flex items-center justify-between pb-[15px] pe-[16px]">
-            <h3 className="font-popin text-[20px] font-semibold text-customBlack">
-              Groups List
-            </h3>
+            <button
+              type="button"
+              class="relative  inline-flex items-center rounded-lg bg-btnColor px-5 py-2.5 text-center text-[17px] font-medium text-white focus:outline-none focus:ring-4 focus:ring-btnColor"
+            >
+              Group List
+              <div class="absolute  -end-2 -top-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-red text-xs font-bold text-white">
+                {myGroup.length}
+              </div>
+            </button>
             <button
               onClick={openModal}
               type="button"
@@ -320,12 +350,38 @@ const GroupList = () => {
                   </p>
                 </div>
 
-                
-                <p className="w-[29%] font-popin text-[13px] font-medium opacity-50">
-                  {item.createdDate
-                    ? moment(item.createdDate).calendar()
-                    : "Error time"}
-                </p>
+                {/* ============= join button ============== */}
+
+                {GroupMember.includes(auth.currentUser.uid + item.GroupKey) ? (
+                  <div className="flex w-[25%] justify-center">
+                    <button className="w-[20] rounded-md bg-btnColor px-[10px] py-[5px] font-popin text-[16px] font-semibold capitalize text-white">
+                      Member
+                    </button>
+                  </div>
+                ) : auth.currentUser.uid === item.AdminUid ? (
+                  <div className="flex w-[25%] justify-center">
+                    <button className="w-[20] rounded-md bg-btnColor px-[10px] py-[5px] font-popin text-[16px] font-semibold capitalize text-white">
+                      Admin
+                    </button>
+                  </div>
+                ) : joinGroupReq.includes(
+                    item.GroupKey + auth.currentUser.uid,
+                  ) ? (
+                  <div className="flex w-[25%] justify-center">
+                    <button className="w-[20] rounded-md bg-btnColor px-[10px] py-[5px] font-popin text-[16px] font-semibold capitalize text-white">
+                      Pending
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex w-[25%] justify-center">
+                    <button
+                      onClick={() => handleAccept(item)}
+                      className="w-[20] rounded-md bg-btnColor px-[10px] py-[5px] font-popin text-[16px] font-semibold capitalize text-white"
+                    >
+                      join
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>

@@ -43,7 +43,7 @@ const HomeLeft = () => {
             if (item.val().uid === uid) {
               setuserInfo(Object.assign(item.val(), { userKey: item.key }));
             }
-            console.log(item.val());
+            // console.log(item.val());
           });
         });
       }
