@@ -8,7 +8,7 @@ const firebaseConfig = {
   projectId: "infinite-chat-on",
   storageBucket: "infinite-chat-on.appspot.com",
   messagingSenderId: "710740363507",
-  appId: "1:710740363507:web:5237e242bfb41925148f86"
+  appId: "1:710740363507:web:5237e242bfb41925148f86",
 };
 
 // Initialize Firebase

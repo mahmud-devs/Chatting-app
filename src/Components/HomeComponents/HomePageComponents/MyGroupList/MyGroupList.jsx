@@ -89,7 +89,7 @@ const MyGroupList = () => {
 
   // ================ join group request accept =================
   const handleGroupRequestAccept = (item) => {
-    console.log(item);
+    // console.log(item);
     let dbAcceptGroupReq = ref(db, "GroupMembers/");
     set(push(dbAcceptGroupReq), {
       AdminEmail: item.AdminEmail,
@@ -104,13 +104,25 @@ const MyGroupList = () => {
       GroupMemberPhoto: item.whoWantsToJoinPhoto,
 
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
-    }).then(() => {
-      const acceptGroupReqdbRef = ref(
-        db,
-        `joinGroupRequest/${item.GroupReqKey}`,
-      );
-      remove(acceptGroupReqdbRef);
-    });
+    })
+      .then(() => {
+        let dbAcceptGroupReqNotification = ref(
+          db,
+          "AcceptGroupReqNotification/",
+        );
+        set(push(dbAcceptGroupReqNotification), {
+          ...item,
+          
+          createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+        });
+      })
+      .then(() => {
+        const acceptGroupReqdbRef = ref(
+          db,
+          `joinGroupRequest/${item.GroupReqKey}`,
+        );
+        remove(acceptGroupReqdbRef);
+      });
   };
 
   // ================ join group request reject =================
@@ -119,6 +131,13 @@ const MyGroupList = () => {
     // console.log(item);
     const acceptGroupReqdbRef = ref(db, `joinGroupRequest/${item.GroupReqKey}`);
     remove(acceptGroupReqdbRef);
+    // ================== send data ====================
+    let dbRejectGroupReqNotification = ref(db, "RejectGroupReqNotification/");
+    set(push(dbAcceptGroupReqNotification), {
+      ...item,
+
+      createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+    });
   };
   return (
     <>
@@ -129,7 +148,7 @@ const MyGroupList = () => {
               type="button"
               class="relative  inline-flex items-center rounded-lg bg-btnColor px-5 py-2.5 text-center text-[17px] font-medium text-white focus:outline-none focus:ring-4 focus:ring-btnColor"
             >
-              Group List
+              My Group List
               <div class="absolute  -end-2 -top-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-red text-xs font-bold text-white">
                 {myGroup.length}
               </div>

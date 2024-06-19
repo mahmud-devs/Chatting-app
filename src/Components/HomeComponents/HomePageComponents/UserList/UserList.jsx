@@ -57,19 +57,34 @@ const UserList = () => {
       receiverKey: item.userKey,
       receiverProfilePic: item.profile_picture,
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
-    }).then(() => {
-      toast.success("👥 Friend request Sent!", {
-        position: "top-left",
-        autoClose: 6000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
+    })
+      .then(() => {
+        let dbFriendReqNotification = ref(db, "FriendRequestNotification/");
+        set(push(dbFriendReqNotification), {
+          senderUid: auth.currentUser.uid,
+          senderName: auth.currentUser.displayName,
+          senderEmail: auth.currentUser.email,
+          senderProfilePic: currentUserdata.profile_picture,
+          receiverUid: item.uid,
+          receiverEmail: item.email,
+          receiverName: item.username,
+          receiverProfilePic: item.profile_picture,
+          createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+        })
+      })
+      .then(() => {
+        toast.success("👥 Friend request Sent!", {
+          position: "top-left",
+          autoClose: 6000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       });
-    });
   };
 
   // =============== read data from FriendRequest database ===============

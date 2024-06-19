@@ -47,16 +47,29 @@ const FriendRequest = () => {
     set(push(dbFriends), {
       ...item,
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
-    }).then(() => {
-      const friendRequestdbRef = ref(db, `FriendRequest/${item.userKey}`);
-      remove(friendRequestdbRef);
-    });
+    })
+      .then(() => {
+        let dbFriendsAcceptNotifiation = ref(db, "FriendsAcceptNotification/");
+        set(push(dbFriendsAcceptNotifiation), {
+          ...item,
+          createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+        });
+      })
+      .then(() => {
+        const friendRequestdbRef = ref(db, `FriendRequest/${item.userKey}`);
+        remove(friendRequestdbRef);
+      });
   };
   // handle friend request reject function implementation
 
   const handleReject = (item) => {
     const friendRequestdbRef = ref(db, `FriendRequest/${item.userKey}`);
     remove(friendRequestdbRef);
+    let dbFriendsRejectNotifiation = ref(db, "FriendsRejectNotification/");
+    set(push(dbFriendsRejectNotifiation), {
+      ...item,
+      createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+    });
   };
 
   return (

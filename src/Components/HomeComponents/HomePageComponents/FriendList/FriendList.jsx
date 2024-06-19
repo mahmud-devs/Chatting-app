@@ -50,28 +50,44 @@ const FriendList = () => {
       blockedByuid: auth.currentUser.uid,
       blockedByName: auth.currentUser.displayName,
       blockedByEmail: auth.currentUser.email,
+      blockedByProfilePic: item.receiverProfilePic,
       blockedUseruid: item.senderUid,
       blockedUserName: item.senderName,
       blockedUserEmail: item.senderEmail,
       blockedUserProfilePic: item.senderProfilePic,
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
-    }).then(() => {
-      const blockListdbRef = ref(db, `Friends/${item.friendKey}`);
-      remove(blockListdbRef);
-      
-    }).then(() => {
-      toast.error(`${item.senderName} Blocked`, {
-        position: "top-right",
-        autoClose: 6000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
+    })
+      .then(() => {
+        let dbBlockListNotification = ref(db, "BlockNotification/");
+        set(push(dbBlockListNotification), {
+          blockedByuid: auth.currentUser.uid,
+          blockedByName: auth.currentUser.displayName,
+          blockedByEmail: auth.currentUser.email,
+          blockedByProfilePic: item.receiverProfilePic,
+          blockedUseruid: item.senderUid,
+          blockedUserName: item.senderName,
+          blockedUserEmail: item.senderEmail,
+          blockedUserProfilePic: item.senderProfilePic,
+          createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+        });
+      })
+      .then(() => {
+        const blockListdbRef = ref(db, `Friends/${item.friendKey}`);
+        remove(blockListdbRef);
+      })
+      .then(() => {
+        toast.error(`${item.senderName} Blocked`, {
+          position: "top-right",
+          autoClose: 6000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       });
-    });
   };
 
   return (

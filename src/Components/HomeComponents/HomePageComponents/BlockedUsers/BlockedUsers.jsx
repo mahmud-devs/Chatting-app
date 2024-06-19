@@ -45,7 +45,7 @@ const BlockedUsers = () => {
     // console.log(item);
     let dbFriendList = ref(db, "Friends/");
     set(push(dbFriendList), {
-      senderEmail: item.blockedUserEmail ,
+      senderEmail: item.blockedUserEmail,
       senderName: item.blockedUserName,
       senderUid: item.blockedUseruid,
       senderProfilePic: item.blockedUserProfilePic,
@@ -53,23 +53,31 @@ const BlockedUsers = () => {
       receiverEmail: auth.currentUser.email,
       receiverName: auth.currentUser.displayName,
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
-    }).then(() => {
-      const blockListdbRef = ref(db, `Block/${item.BlockListKey}`);
-      remove(blockListdbRef);
-      
-    }).then(() => {
-      toast.success(`${item.blockedUserName} Unblocked`, {
-        position: "top-right",
-        autoClose: 6000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
+    })
+      .then(() => {
+        let dbUnblockNotification = ref(db, "UnblockNotification/");
+        set(push(dbUnblockNotification), {
+          ...item,
+          createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+        });
+      })
+      .then(() => {
+        const blockListdbRef = ref(db, `Block/${item.BlockListKey}`);
+        remove(blockListdbRef);
+      })
+      .then(() => {
+        toast.success(`${item.blockedUserName} Unblocked`, {
+          position: "top-right",
+          autoClose: 6000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       });
-    });
   };
 
   return (

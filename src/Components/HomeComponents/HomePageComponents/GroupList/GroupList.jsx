@@ -267,6 +267,20 @@ const GroupList = () => {
       AdminUid: item.AdminUid,
       AdminEmail: item.AdminEmail,
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+    }).then(() => {
+      set(push(dbRef(db, "joinGroupRequestNotification/")), {
+        whoWantsToJoinName: auth.currentUser.displayName,
+        whoWantsToJoinUid: auth.currentUser.uid,
+        whoWantsToJoinPhoto: userList.profile_picture,
+        GroupKey: item.GroupKey,
+        GroupTagName: item.GroupTagName,
+        GroupPhotoUrl: item.GroupPhotoUrl,
+        GroupName: item.GroupName,
+        AdminUserName: item.AdminUserName,
+        AdminUid: item.AdminUid,
+        AdminEmail: item.AdminEmail,
+        createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+      });
     });
   };
   // ========================= handle join group read data ======================
