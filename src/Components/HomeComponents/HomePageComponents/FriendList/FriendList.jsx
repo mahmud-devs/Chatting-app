@@ -58,16 +58,13 @@ const FriendList = () => {
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
     })
       .then(() => {
-        let dbBlockListNotification = ref(db, "BlockNotification/");
+        let dbBlockListNotification = ref(db, "AllNotification/");
         set(push(dbBlockListNotification), {
-          blockedByuid: auth.currentUser.uid,
-          blockedByName: auth.currentUser.displayName,
-          blockedByEmail: auth.currentUser.email,
-          blockedByProfilePic: item.receiverProfilePic,
-          blockedUseruid: item.senderUid,
-          blockedUserName: item.senderName,
-          blockedUserEmail: item.senderEmail,
-          blockedUserProfilePic: item.senderProfilePic,
+          NotificationName: auth.currentUser.displayName,
+          NotificationProfilePic: item.receiverProfilePic,
+          NotificationReceiverUid: item.senderUid,
+          NotificationMessege: `${auth.currentUser.displayName} Has blocked you!`,
+
           createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
         });
       })

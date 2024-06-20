@@ -106,13 +106,13 @@ const MyGroupList = () => {
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
     })
       .then(() => {
-        let dbAcceptGroupReqNotification = ref(
-          db,
-          "AcceptGroupReqNotification/",
-        );
+        let dbAcceptGroupReqNotification = ref(db, "AllNotification/");
         set(push(dbAcceptGroupReqNotification), {
-          ...item,
-          
+          NotificationName: item.GroupName,
+          NotificationProfilePic: item.GroupPhotoUrl,
+          NotificationReceiverUid: item.whoWantsToJoinUid,
+          NotificationMessege: `${item.GroupName} Accepted your group join request!`,
+
           createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
         });
       })
@@ -132,9 +132,12 @@ const MyGroupList = () => {
     const acceptGroupReqdbRef = ref(db, `joinGroupRequest/${item.GroupReqKey}`);
     remove(acceptGroupReqdbRef);
     // ================== send data ====================
-    let dbRejectGroupReqNotification = ref(db, "RejectGroupReqNotification/");
-    set(push(dbAcceptGroupReqNotification), {
-      ...item,
+    let dbRejectGroupReqNotification = ref(db, "AllNotification/");
+    set(push(dbRejectGroupReqNotification), {
+      NotificationName: item.GroupName,
+      NotificationProfilePic: item.GroupPhotoUrl,
+      NotificationReceiverUid: item.whoWantsToJoinUid,
+      NotificationMessege: `${item.GroupName} Rejected your group join request!`,
 
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
     });

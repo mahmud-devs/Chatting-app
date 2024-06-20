@@ -51,13 +51,17 @@ const BlockedUsers = () => {
       senderProfilePic: item.blockedUserProfilePic,
       receiverUid: auth.currentUser.uid,
       receiverEmail: auth.currentUser.email,
+      receiverProfilePic: item.blockedByProfilePic,
       receiverName: auth.currentUser.displayName,
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
     })
       .then(() => {
-        let dbUnblockNotification = ref(db, "UnblockNotification/");
+        let dbUnblockNotification = ref(db, "AllNotification/");
         set(push(dbUnblockNotification), {
-          ...item,
+          NotificationName: item.blockedByName,
+          NotificationProfilePic: item.blockedByProfilePic,
+          NotificationReceiverUid: item.blockedUseruid,
+          NotificationMessege: `${item.blockedByName} Has Unblocked you!`,
           createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
         });
       })

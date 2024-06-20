@@ -40,7 +40,7 @@ const FriendRequest = () => {
   }, [db]);
   // console.log(FriendRequestList);
 
-  // handle friend request accept function implementation
+  // ============== handle friend request accept function implementation
 
   const handleAccept = (item) => {
     let dbFriends = ref(db, "Friends/");
@@ -49,9 +49,12 @@ const FriendRequest = () => {
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
     })
       .then(() => {
-        let dbFriendsAcceptNotifiation = ref(db, "FriendsAcceptNotification/");
+        let dbFriendsAcceptNotifiation = ref(db, "AllNotification/");
         set(push(dbFriendsAcceptNotifiation), {
-          ...item,
+          NotificationMessege: `${auth.currentUser.displayName} Accepted your friend request!`,
+          NotificationReceiverUid: item.senderUid,
+          NotificationProfilePic: item.receiverProfilePic,
+          NotificationName: item.receiverName,
           createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
         });
       })
@@ -65,9 +68,12 @@ const FriendRequest = () => {
   const handleReject = (item) => {
     const friendRequestdbRef = ref(db, `FriendRequest/${item.userKey}`);
     remove(friendRequestdbRef);
-    let dbFriendsRejectNotifiation = ref(db, "FriendsRejectNotification/");
+    let dbFriendsRejectNotifiation = ref(db, "AllNotification/");
     set(push(dbFriendsRejectNotifiation), {
-      ...item,
+      NotificationMessege: `${auth.currentUser.displayName} Rejected your friend request!`,
+      NotificationReceiverUid: item.senderUid,
+      NotificationProfilePic: item.receiverProfilePic,
+      NotificationName: item.receiverName,
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
     });
   };

@@ -268,17 +268,11 @@ const GroupList = () => {
       AdminEmail: item.AdminEmail,
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
     }).then(() => {
-      set(push(dbRef(db, "joinGroupRequestNotification/")), {
-        whoWantsToJoinName: auth.currentUser.displayName,
-        whoWantsToJoinUid: auth.currentUser.uid,
-        whoWantsToJoinPhoto: userList.profile_picture,
-        GroupKey: item.GroupKey,
-        GroupTagName: item.GroupTagName,
-        GroupPhotoUrl: item.GroupPhotoUrl,
-        GroupName: item.GroupName,
-        AdminUserName: item.AdminUserName,
-        AdminUid: item.AdminUid,
-        AdminEmail: item.AdminEmail,
+      set(push(dbRef(db, "AllNotification/")), {
+        NotificationName: auth.currentUser.displayName,
+        NotificationProfilePic: userList.profile_picture,
+        NotificationReceiverUid: item.AdminUid,
+        NotificationMessege: `${auth.currentUser.displayName} Wants to join your group ${item.GroupName}!`,
         createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
       });
     });

@@ -59,16 +59,12 @@ const UserList = () => {
       createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
     })
       .then(() => {
-        let dbFriendReqNotification = ref(db, "FriendRequestNotification/");
+        let dbFriendReqNotification = ref(db, "AllNotification/");
         set(push(dbFriendReqNotification), {
-          senderUid: auth.currentUser.uid,
-          senderName: auth.currentUser.displayName,
-          senderEmail: auth.currentUser.email,
-          senderProfilePic: currentUserdata.profile_picture,
-          receiverUid: item.uid,
-          receiverEmail: item.email,
-          receiverName: item.username,
-          receiverProfilePic: item.profile_picture,
+          NotificationName: auth.currentUser.displayName,
+          NotificationProfilePic: currentUserdata.profile_picture,
+          NotificationReceiverUid: item.uid,
+          NotificationMessege:`${auth.currentUser.displayName} Sent you a friend request!` ,
           createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
         })
       })
