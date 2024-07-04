@@ -8,7 +8,7 @@ import MyGroupList from "../Components/HomeComponents/HomePageComponents/MyGroup
 const HomePage = () => {
   return (
     <>
-      <div className="flex h-[100%] w-full flex-wrap justify-between gap-y-4">
+      <div className="flex h-[100%] w-full flex-wrap justify-between gap-y-[10px]">
         <GroupList />
         <FriendList />
         <UserList />

@@ -46,7 +46,7 @@ import { getAuth } from "firebase/auth";
 import moment from "moment";
 // ============== firebase storage ================
 
-const GroupList = () => {
+const GroupList = ({isChat = false}) => {
   // ============ firebase storage ===============
   const storage = getStorage();
   const db = getDatabase();
@@ -309,11 +309,11 @@ const GroupList = () => {
   // ========================================= return ====================================
   return (
     <>
-      <div className="w-[32%] ">
+      <div className= {`${isChat ? "w-full" :"w-[32%] "}`} >
         <div>
           <Search className={"w-[100%]"} />
         </div>
-        <div className="mt-[18px] w-[100%] rounded-2xl ps-[17px] pt-[17px] shadow-md">
+        <div className="mt-[8px] w-[100%] rounded-2xl ps-[17px] pt-[17px] shadow-md">
           <div className="flex items-center justify-between pb-[15px] pe-[16px]">
             <button
               type="button"

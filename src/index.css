@@ -21,8 +21,30 @@
   ol,
   li {
     list-style: none;
-    
   }
   /* font-family: "Open Sans", sans-serif;
     font-family: "Nunito", sans-serif; */
+}
+
+@layer components {
+  .messLeft::before {
+    position: absolute;
+    content: "";
+    width: 25px;
+    height: 25px;
+    left: -15px;
+    bottom: 0;
+    background: #f1f1f1;
+    clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+  }
+  .messRight::after {
+    position: absolute;
+    content: "";
+    width: 25px;
+    height: 25px;
+    right: -15px;
+    bottom: 0;
+    background: #5F35F5;
+    clip-path: polygon(0 0, 0% 100%, 100% 100%);
+  }
 }

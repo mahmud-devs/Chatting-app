@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import ChatComponents from "../Components/ChatComponents/ChatComponents";
 
 const ChattingPage = () => {
   return (
-    <div>ChattingPage</div>
-  )
-}
+    <>
+      <ChatComponents />
+    </>
+  );
+};
 
-export default ChattingPage
+export default ChattingPage;
