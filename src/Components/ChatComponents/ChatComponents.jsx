@@ -1,9 +1,102 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import GroupList from "../HomeComponents/HomePageComponents/GroupList/GroupList";
 import FriendList from "../HomeComponents/HomePageComponents/FriendList/FriendList";
 import profilePic from "../../assets/homeLeft/profile.png";
+import { FaPaperPlane } from "react-icons/fa";
+import { FaRegFaceLaugh } from "react-icons/fa6";
+import { IoCameraOutline } from "react-icons/io5";
+
+import EmojiPicker from "emoji-picker-react";
+
+import ScrollToBottom from "react-scroll-to-bottom";
+
+// ==================== firebase import ===================
+import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import { getAuth } from "firebase/auth";
+import moment from "moment";
+
+import { useSelector } from "react-redux";
+
 import { BsThreeDotsVertical } from "react-icons/bs";
 const ChatComponents = () => {
+  const db = getDatabase();
+  const auth = getAuth();
+  const [ChatMsg, setChatMsg] = useState("");
+  const [SingleMsgData, setSingleMsgData] = useState([]);
+  const [SingleMsgDataUid, setSingleMsgDataUid] = useState([]);
+  const { friendsDataRedux } = useSelector((state) => state.FriendData);
+  const [openEmoji, setopenEmoji] = useState(false);
+  // console.log(friendsDataRedux);
+
+  // =====================handleChatMsg function implementation========================
+
+  const handleChatMsg = (event = {}) => {
+    const { value } = event.target;
+
+    setChatMsg(value);
+  };
+  // ====================== handleSendMsg function implementation =================
+
+  const handleSendMsg = () => {
+    let dbSingleMsgFef = ref(db, "SingleMsg/");
+    set(push(dbSingleMsgFef), {
+      whoSendMsgName: auth.currentUser.displayName,
+      whoSendMsgEmail: auth.currentUser.email,
+      whoSendMsgPhoto: friendsDataRedux.receiverProfilePic,
+      whoSendMsgUid: auth.currentUser.uid,
+      whoRecivedMsgName: friendsDataRedux.senderName,
+      whoRecivedMsgEmail: friendsDataRedux.senderEmail,
+      whoRecivedMsgUid: friendsDataRedux.senderUid,
+      whoRecivedMsgPhoto: friendsDataRedux.senderProfilePic,
+      SingleMsg: ChatMsg,
+      createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+    }).then(() => {
+      setChatMsg("");
+      setopenEmoji(false);
+    });
+  };
+
+  // ==============================  read data from single messege database  ========================
+
+  useEffect(() => {
+    const SingleMsgdbRef = ref(db, "SingleMsg/");
+    onValue(SingleMsgdbRef, (snapshot) => {
+      let SingleMsgArr = [];
+      let SingleMsgUidArr = [];
+      snapshot.forEach((item) => {
+        if (
+          auth.currentUser.uid === item.val().whoSendMsgUid ||
+          auth.currentUser.uid === item.val().whoRecivedMsgUid
+        ) {
+          SingleMsgArr.push({ ...item.val(), SilgleMsgKey: item.key });
+        }
+      });
+      snapshot.forEach((item) => {
+        SingleMsgUidArr.push(
+          item.val().whoRecivedMsgUid + item.val().whoSendMsgUid,
+        );
+      });
+
+      setSingleMsgData(SingleMsgArr);
+      setSingleMsgDataUid(SingleMsgUidArr);
+    });
+  }, [db]);
+
+  // const AllDataUid = friendsDataRedux.senderUid + auth.currentUser.uid;
+  // console.log(AllDataUid);
+  // console.log(SingleMsgDataUid);
+  // console.log(friendsDataRedux.receiverUid);
+
+  // ================================== handleEmoji =============================
+
+  const handleEmoji = (EmojiClickData) => {
+    // console.log(EmojiClickData.emoji);
+    setChatMsg((prevMsg) => {
+      // console.log(prevMsg);
+      return `${prevMsg} ${EmojiClickData.emoji}`;
+    });
+  };
+
   return (
     <>
       <div className="flex justify-between">
@@ -21,8 +114,16 @@ const ChatComponents = () => {
                     <picture>
                       <img
                         className="size-full w-full rounded-full object-cover shadow-lg "
-                        src={profilePic}
-                        alt={profilePic}
+                        src={
+                          friendsDataRedux.senderProfilePic
+                            ? friendsDataRedux.senderProfilePic
+                            : profilePic
+                        }
+                        alt={
+                          friendsDataRedux.senderProfilePic
+                            ? friendsDataRedux.senderProfilePic
+                            : profilePic
+                        }
                       />
                     </picture>
                     {navigator.onLine && (
@@ -34,11 +135,13 @@ const ChatComponents = () => {
                   </div>
                   {/* ==================== */}
                   <div>
-                    <h4 className="font-popin text-[18px] font-semibold text-customBlack">
-                      "User"
+                    <h4 className="font-popin text-[18px] font-semibold capitalize text-customBlack">
+                      {friendsDataRedux.senderName
+                        ? friendsDataRedux.senderName
+                        : "User Name"}
                     </h4>
                     <p className="text-wrap font-popin text-[14px] text-ptext opacity-75">
-                      "messege deleted"
+                      Online
                     </p>
                   </div>
                 </div>
@@ -49,28 +152,79 @@ const ChatComponents = () => {
               </div>
             </div>
             {/* ======================================================== */}
-            <div className="flex h-[70%] w-full flex-col overflow-y-scroll px-10 pt-10 scrollbar-thin">
-              <div className="mb-5 self-start">
-                <div className=" mb-2 max-w-[350px] font-popin ">
-                  <p className="messLeft relative w-fit rounded-xl bg-[#F1F1F1] px-7 py-3 text-[18px]  font-semibold ">
-                    Hello Lorem ipsum 
-                  </p>
-                </div>
-                <span>Today, 2:13pm</span>
-              </div>
-              <div className="mb-5  self-end  ">
-                <div className=" mb-2 max-w-[350px] self-end font-popin">
-                  <p className="messRight relative w-fit rounded-xl bg-btnColor px-7 py-3 text-[18px] font-semibold  text-white ">
-                    Hello Lorem ipsum dolor sit amet consectetur adipisicing
-                    elit.
-                  </p>
-                </div>
-                <span className="inline-block w-full text-end">
-                  Today, 2:13pm
-                </span>
-              </div>
 
-              
+            <ScrollToBottom className="h-[65%]">
+              <div className=" h-[100%] w-full  overflow-y-scroll px-10  scrollbar-thin ">
+                {SingleMsgData?.map((item) => (
+                  <div className="flex w-full flex-col">
+                    {item.whoSendMsgUid === auth.currentUser.uid &&
+                    item.whoRecivedMsgUid === friendsDataRedux.senderUid ? (
+                      <div className="mb-5  self-end  ">
+                        <div className=" mb-2 max-w-[350px] self-end font-popin">
+                          <p className="messRight relative w-fit rounded-xl bg-btnColor px-7 py-3 text-[18px] font-semibold  text-white ">
+                            {item.SingleMsg}
+                          </p>
+                        </div>
+                        <span className="inline-block w-full text-end">
+                          {moment(item.createdDate).calendar()}
+                        </span>
+                      </div>
+                    ) : (
+                      item.whoRecivedMsgUid === auth.currentUser.uid &&
+                      item.whoSendMsgUid === friendsDataRedux.senderUid && (
+                        <div>
+                          <div className="mb-5 self-start">
+                            <div className=" mb-2 max-w-[350px] font-popin ">
+                              <p className="messLeft relative w-fit rounded-xl bg-[#F1F1F1] px-7 py-3 text-[18px]  font-semibold ">
+                                {item.SingleMsg}
+                              </p>
+                            </div>
+                            <span>{moment(item.createdDate).calendar()}</span>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                ))}
+              </div>
+            </ScrollToBottom>
+
+            {/* ====================================================================== */}
+            <div className="w-full  px-10 ">
+              <div className="w-full  border-t-2 border-[rgba(0,0,0,0.4)] pt-7">
+                <div className="flex  w-full justify-between">
+                  <div className="relative w-[88%]">
+                    <input
+                      type="text"
+                      className="w-full rounded-xl bg-[#F1F1F1] px-8 py-3 pe-28"
+                      onChange={handleChatMsg}
+                      value={ChatMsg}
+                    />
+                    {openEmoji && (
+                      <div className="absolute bottom-[80px] right-0">
+                        <EmojiPicker onEmojiClick={handleEmoji} />
+                      </div>
+                    )}
+
+                    <span
+                      className="absolute right-[10%] top-1/2 -translate-y-1/2 cursor-pointer"
+                      onClick={() => setopenEmoji(!openEmoji)}
+                    >
+                      <FaRegFaceLaugh className=" text-xl" />
+                    </span>
+                    <span className="absolute right-[4%] top-1/2 -translate-y-1/2 cursor-pointer">
+                      <IoCameraOutline className=" text-2xl" />
+                    </span>
+                  </div>
+
+                  <button
+                    onClick={handleSendMsg}
+                    className="flex w-[55px] cursor-pointer items-center justify-center rounded-xl bg-btnColor py-3"
+                  >
+                    <FaPaperPlane className="text-xl text-white" />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

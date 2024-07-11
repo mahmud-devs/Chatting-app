@@ -7,6 +7,11 @@ import ProfileImage3 from "../../../../assets/HomePageImage/three.gif";
 import { FaUserFriends } from "react-icons/fa";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 
+// ==================react redux ===================
+
+import { useSelector,useDispatch } from "react-redux";
+import { friendsData } from "../../../../Features/Redux/FriendSlice/FriendSlice";
+
 // =============
 import {
   getDatabase,
@@ -19,10 +24,11 @@ import {
 import { getAuth } from "firebase/auth";
 import moment from "moment";
 
-const FriendList = ({isChat = false}) => {
+const FriendList = ({ isChat = false }) => {
   const db = getDatabase();
   const auth = getAuth();
   const [FriendsData, setFriendsData] = useState([]);
+  const dispatch = useDispatch()
   // =============
 
   // =============== read data from Friends database ===============
@@ -87,9 +93,18 @@ const FriendList = ({isChat = false}) => {
       });
   };
 
+  // ======================= redux friend info ======================
+
+  const handleFriendInfo = (item) => {
+    console.log(item);
+    dispatch(friendsData(item))
+  };
+
+  // useSelector((state) => console.log(state))
+
   return (
     <>
-      <div className={`${isChat ? "w-full mt-[10px]" : "w-[32%] "}`} >
+      <div className={`${isChat ? "mt-[10px] w-full" : "w-[32%] "}`}>
         <div className=" w-[100%] rounded-2xl ps-[17px] pt-[17px] shadow-md">
           <div className="flex items-center justify-between pb-[5px] pe-[16px]">
             <button
@@ -111,7 +126,10 @@ const FriendList = ({isChat = false}) => {
 
             {FriendsData.length > 0 ? (
               FriendsData?.map((item) => (
-                <div className="flex items-center justify-between py-[13px] ">
+                <div
+                  onClick={() => handleFriendInfo(item)}
+                  className="flex cursor-pointer items-center justify-between py-[13px] "
+                >
                   <div className="relative h-[70px] w-[70px] cursor-pointer">
                     <picture>
                       <img
