@@ -6,11 +6,13 @@ import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { FaRegBell } from "react-icons/fa6";
 import { BsGear } from "react-icons/bs";
 import { LuLogOut } from "react-icons/lu";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaCloudArrowUp } from "react-icons/fa6";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { getDatabase, ref, onValue, update, set } from "firebase/database";
 import { FaUserAlt } from "react-icons/fa";
+
+import { ToastContainer, toast, Bounce } from "react-toastify";
 
 import { Uploader } from "uploader";
 
@@ -18,6 +20,7 @@ const HomeLeft = () => {
   const db = getDatabase();
   const auth = getAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   let active = location.pathname.split("/")[1];
 
   // ========== all states ==========
@@ -77,6 +80,31 @@ const HomeLeft = () => {
       });
   };
 
+  // =============== handleSignOut function implementation ==================
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        console.log("sign out successfully");
+        toast.success("📤 Successfully Sign Out!", {
+          position: "top-left",
+          autoClose: 6000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+        navigate("/login");
+      })
+      .catch((error) => {
+        // An error happened
+        console.log("error while signing out", error);
+      });
+  };
+
   return (
     <>
       <div className="flex h-[100%] w-[10%] flex-col  items-center rounded-3xl  bg-btnColor py-9">
@@ -84,7 +112,7 @@ const HomeLeft = () => {
           className="relative h-[100px] w-[100px] rounded-full bg-customBlack "
           onClick={handleImageUploader}
         >
-          {userInfo.profile_picture  ? (
+          {userInfo.profile_picture ? (
             <picture>
               <img
                 className="h-[100%] w-[100%] rounded-full object-cover"
@@ -158,7 +186,10 @@ const HomeLeft = () => {
               <BsGear />
             </Link>
           </li>
-          <li className="mt-10 cursor-pointer pb-2 pr-[26px] pt-3 text-white opacity-100">
+          <li
+            onClick={handleSignOut}
+            className="mt-10 cursor-pointer pb-2 pr-[26px] pt-3 text-white opacity-100"
+          >
             <LuLogOut />
           </li>
         </ul>
