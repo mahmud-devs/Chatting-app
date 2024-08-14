@@ -62,6 +62,7 @@ const HomeLeft = () => {
         if (files.length === 0) {
           console.log("No files selected.");
         } else {
+          // console.log(files);
           setphotoUrl(files[0].fileUrl);
           // set(ref(db, "users/" + userInfo[0].userKey), {
           //   username: userInfo[0].username,

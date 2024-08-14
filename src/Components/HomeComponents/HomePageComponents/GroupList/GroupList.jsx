@@ -46,7 +46,7 @@ import { getAuth } from "firebase/auth";
 import moment from "moment";
 // ============== firebase storage ================
 
-const GroupList = ({isChat = false}) => {
+const GroupList = ({ isChat = false }) => {
   // ============ firebase storage ===============
   const storage = getStorage();
   const db = getDatabase();
@@ -182,7 +182,7 @@ const GroupList = ({isChat = false}) => {
 
       uploadString(storageRef, message4, "data_url")
         .then((snapshot) => {
-          // console.log("Uploaded a data_url string!");
+          console.log("Uploaded a data_url string!");
         })
         .then(() => {
           getDownloadURL(storageRef)
@@ -309,7 +309,7 @@ const GroupList = ({isChat = false}) => {
   // ========================================= return ====================================
   return (
     <>
-      <div className= {`${isChat ? "w-full" :"w-[32%] "}`} >
+      <div className={`${isChat ? "w-full" : "w-[32%] "}`}>
         <div>
           <Search className={"w-[100%]"} />
         </div>

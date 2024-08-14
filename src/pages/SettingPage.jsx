@@ -1,8 +1,11 @@
 import React from 'react'
+import SettingComponents from '../Components/SettingComponents/SettingComponents'
 
 const SettingPage = () => {
   return (
-    <div>SettingPage</div>
+    <>
+      <SettingComponents/>
+    </>
   )
 }
 
