@@ -12,8 +12,15 @@ import ScrollToBottom from "react-scroll-to-bottom";
 
 // ==================== firebase import ===================
 import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import {
+  getStorage,
+  ref as storageMainRef,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
 import { getAuth } from "firebase/auth";
 import moment from "moment";
+import { Uploader } from "uploader";
 
 import { useSelector } from "react-redux";
 
@@ -21,6 +28,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 const ChatComponents = () => {
   const db = getDatabase();
   const auth = getAuth();
+  const storage = getStorage();
   const [ChatMsg, setChatMsg] = useState("");
   const [SingleMsgData, setSingleMsgData] = useState([]);
   const [SingleMsgDataUid, setSingleMsgDataUid] = useState([]);
@@ -97,6 +105,62 @@ const ChatComponents = () => {
     });
   };
 
+  // ============================= handleSendImg function implementation============================
+  // ========= image uploader ============
+  const uploader = Uploader({
+    apiKey: "free",
+  });
+
+  const handleSendImg = () => {
+    uploader
+      .open({ multi: true })
+      .then((files) => {
+        if (files.length === 0) {
+          console.log("No files selected.");
+        } else {
+          // Upload file and metadata to the object 'images/mountains.jpg'
+          const storageRef = storageMainRef(
+            storage,
+            "ChatMessege/" + files[0].originalFile.file.name,
+          );
+          const uploadTask = uploadBytesResumable(
+            storageRef,
+            files[0].originalFile.file,
+          );
+          // ========================= =======================
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {},
+            (error) => {
+              console.log(error.code);
+            },
+            () => {
+              // Upload completed successfully, now we can get the download URL
+              getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                // console.log("File available at", downloadURL);
+                let dbSingleMsgFef = ref(db, "SingleMsg/");
+                set(push(dbSingleMsgFef), {
+                  whoSendMsgName: auth.currentUser.displayName,
+                  whoSendMsgEmail: auth.currentUser.email,
+                  whoSendMsgPhoto: friendsDataRedux.receiverProfilePic,
+                  whoSendMsgUid: auth.currentUser.uid,
+                  whoRecivedMsgName: friendsDataRedux.senderName,
+                  whoRecivedMsgEmail: friendsDataRedux.senderEmail,
+                  whoRecivedMsgUid: friendsDataRedux.senderUid,
+                  whoRecivedMsgPhoto: friendsDataRedux.senderProfilePic,
+                  SingleMsgImage: downloadURL,
+                  createdDate: moment().format("MM//DD/YYYY, h:mm:ss a"),
+                });
+              });
+            },
+          );
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   return (
     <>
       <div className="flex justify-between">
@@ -161,9 +225,19 @@ const ChatComponents = () => {
                     item.whoRecivedMsgUid === friendsDataRedux.senderUid ? (
                       <div className="mb-5  self-end  ">
                         <div className=" mb-2 max-w-[350px] self-end font-popin">
-                          <p className="messRight relative w-fit rounded-xl bg-btnColor px-7 py-3 text-[18px] font-semibold  text-white ">
-                            {item.SingleMsg}
-                          </p>
+                          {item.SingleMsg ? (
+                            <p className="messRight relative w-fit rounded-xl bg-btnColor px-7 py-3 text-[18px] font-semibold  text-white ">
+                              {item.SingleMsg}
+                            </p>
+                          ) : (
+                            <picture>
+                              <img
+                                className="w-fit"
+                                src={item.SingleMsgImage}
+                                alt={item.SingleMsgImage}
+                              />
+                            </picture>
+                          )}
                         </div>
                         <span className="inline-block w-full text-end">
                           {moment(item.createdDate).calendar()}
@@ -175,9 +249,19 @@ const ChatComponents = () => {
                         <div>
                           <div className="mb-5 self-start">
                             <div className=" mb-2 max-w-[350px] font-popin ">
-                              <p className="messLeft relative w-fit rounded-xl bg-[#F1F1F1] px-7 py-3 text-[18px]  font-semibold ">
-                                {item.SingleMsg}
-                              </p>
+                              {item.SingleMsg ? (
+                                <p className="messLeft relative w-fit rounded-xl bg-[#F1F1F1] px-7 py-3 text-[18px]  font-semibold ">
+                                  {item.SingleMsg}
+                                </p>
+                              ) : (
+                                <picture>
+                                  <img
+                                    className="w-fit"
+                                    src={item.SingleMsgImage}
+                                    alt={item.SingleMsgImage}
+                                  />
+                                </picture>
+                              )}
                             </div>
                             <span>{moment(item.createdDate).calendar()}</span>
                           </div>
@@ -205,18 +289,22 @@ const ChatComponents = () => {
                         <EmojiPicker onEmojiClick={handleEmoji} />
                       </div>
                     )}
-
+                    {/* ====================== send emoji ========================= */}
                     <span
                       className="absolute right-[10%] top-1/2 -translate-y-1/2 cursor-pointer"
                       onClick={() => setopenEmoji(!openEmoji)}
                     >
                       <FaRegFaceLaugh className=" text-xl" />
                     </span>
-                    <span className="absolute right-[4%] top-1/2 -translate-y-1/2 cursor-pointer">
+                    {/* ================ send image =========================== */}
+                    <span
+                      onClick={handleSendImg}
+                      className="absolute right-[4%] top-1/2 -translate-y-1/2 cursor-pointer"
+                    >
                       <IoCameraOutline className=" text-2xl" />
                     </span>
                   </div>
-
+                  {/* ================ send messege =========================== */}
                   <button
                     onClick={handleSendMsg}
                     className="flex w-[55px] cursor-pointer items-center justify-center rounded-xl bg-btnColor py-3"

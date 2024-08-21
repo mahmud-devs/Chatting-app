@@ -6,6 +6,7 @@ import NotificationPage from "./pages/NotificationPage";
 import ChattingPage from "./pages/ChattingPage";
 import SettingPage from "./pages/SettingPage";
 import Home from "./pages/Home";
+import HelpPage from "./pages/HelpPage";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 // ======== router =======
 import {
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
         <Route path="/chat" element={<ChattingPage />} />
         <Route path="/notification" element={<NotificationPage />} />
         <Route path="/setting" element={<SettingPage />} />
+        <Route path="/help" element={<HelpPage />} />
       </Route>
       <Route path="/email-verification" element={<EmailVerification />} />
       <Route path="/*" element={<h1>Error page</h1>} />

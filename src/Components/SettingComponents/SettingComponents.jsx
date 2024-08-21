@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Search from "../HomeComponents/HomePageComponents/HomePageCommonComponents/Search";
 import SettingRightComponent from "./SettingCommonComponents/SettingRightComponent";
+import {  useNavigate } from "react-router-dom";
 
 import { getAuth, updateProfile } from "firebase/auth";
-import { getDatabase, ref, onValue, update, set } from "firebase/database";
+import { getDatabase, ref, onValue, update, set, } from "firebase/database";
 import {
   getStorage,
   ref as storageOnRef,
@@ -38,6 +39,8 @@ const SettingComponents = () => {
   const db = getDatabase();
   const auth = getAuth();
   const storage = getStorage();
+
+  const navigate = useNavigate();
 
   const [UserInfo, setUserInfo] = useState({});
   const [FriendReqReciver, setFriendReqReciver] = useState({});
@@ -181,6 +184,12 @@ const SettingComponents = () => {
       });
   };
 
+  // ================ HandleHelpPage ==============
+
+  const HandleHelpPage = ()=>{
+    navigate("/help")
+  }
+
   return (
     <>
       <div>
@@ -242,7 +251,7 @@ const SettingComponents = () => {
                 </p>
               </div>
 
-              <div className="mb-8 flex cursor-pointer items-center gap-x-6">
+              <div onClick={HandleHelpPage} className="mb-8 flex cursor-pointer items-center gap-x-6">
                 <FaRegCircleQuestion className="text-2xl" />
 
                 <p className="ps-2 font-popin text-xl font-normal ">Help.</p>
